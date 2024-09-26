@@ -15,14 +15,30 @@ def get_pods():
 
 @app.route('/get-logs', methods=['POST'])
 def get_logs():
+
+    # fake logs
+    with open('fake-logs', 'r') as file:
+        logs = file.read()
+
     # Extract the text from the incoming request
     data = request.json
     text = data.get('text', '')  # Get the command text
     pod_name, num_lines = text.split()  # Assume input format is "pod_name num_lines"
+    num_lines = int(num_lines)
 
-    # Simulated log response
-    logs = f"Logs for pod '{pod_name}': this is {num_lines} of logs..."  # Mocked logs
-    return jsonify(logs)
+    # Split logs into lines
+    log_lines = logs.splitlines()
+
+    # Ensure num_lines does not exceed available lines
+    if num_lines > len(log_lines):
+        num_lines = len(log_lines)-1
+
+    # Get the last num_lines amount of logs
+    pod_logs = "\n".join(log_lines[-num_lines:])
+
+    logs_message = [{"type": "section","text": {"type": "mrkdwn","text": f"*Logs for pod '{pod_name}'*:\n{pod_logs}"}}]
+
+    return jsonify(logs_message)
 
 # Run Flask
 if __name__ == "__main__":

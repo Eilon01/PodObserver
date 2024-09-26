@@ -144,24 +144,29 @@ def get_logs_command():
     if not verify_slack_request(request):
         return Response('Invalid request', status=403)
 
-    # Forward command to Kubernetes API service
-    response = requests.post(f"{K8S_QUESTIONER_SERVICE_URL}/get-logs", json={'text': text})
-
     # Retrieve channel info from Slack's request
     channel_id = request.form.get('channel_id')
 
     # Text contains pod name and number of lines
     text = request.form.get('text') 
 
-    if response.ok:
-        logs_info = response.json()  # Get the response from the K8s API
+    print(text)
 
-        message = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": logs_info}}]}
+    try:
+        # Forward command to Kubernetes API service
+        response = requests.post(f"{K8S_QUESTIONER_SERVICE_URL}/get-logs", json={'text': text})
 
-        send_message(channel_id, message['blocks'])
+        if response.ok:
+            logs_info = response.json()  # Get the response from the K8s API
 
-    else:
-        client.chat_postMessage(channel=channel_id, text="Error fetching logs.")
+            send_message(channel_id, logs_info)
+
+        else:
+            client.chat_postMessage(channel=channel_id, text="Error fetching logs.")
+        
+    except requests.exceptions.RequestException as e:
+        # Handle connection errors or timeouts
+        client.chat_postMessage(channel=channel_id, text="Error: Something went wrong, please try again later or contact support.")
     
     return Response(), 200
 

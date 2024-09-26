@@ -1,0 +1,109 @@
+2024-09-26 10:00:01 [INFO] Application started successfully.
+2024-09-26 10:00:02 [DEBUG] Initializing user session for user_id=123.
+2024-09-26 10:00:03 [INFO] User 123 accessed the dashboard.
+2024-09-26 10:00:04 [WARNING] User 123 tried to access restricted page.
+2024-09-26 10:00:05 [ERROR] Database connection failed: timeout.
+2024-09-26 10:00:06 [INFO] Retrying database connection...
+2024-09-26 10:00:07 [DEBUG] Attempting connection to DB at db.example.com.
+2024-09-26 10:00:08 [INFO] Database connection established.
+2024-09-26 10:00:09 [INFO] User 123 viewed reports.
+2024-09-26 10:00:10 [DEBUG] Fetching data for report ID 456.
+2024-09-26 10:00:11 [INFO] Report 456 generated successfully.
+2024-09-26 10:00:12 [WARNING] Report generation took longer than expected.
+2024-09-26 10:00:13 [ERROR] Failed to send report via email: SMTP error.
+2024-09-26 10:00:14 [INFO] User 123 logged out.
+2024-09-26 10:00:15 [DEBUG] Cleaning up session data for user_id=123.
+2024-09-26 10:00:16 [INFO] Scheduled task started: data backup.
+2024-09-26 10:00:17 [INFO] Backing up database to backup/example_db.bak.
+2024-09-26 10:00:18 [INFO] Data backup completed successfully.
+2024-09-26 10:00:19 [ERROR] Backup verification failed: checksum mismatch.
+2024-09-26 10:00:20 [WARNING] Disk space running low on server.
+2024-09-26 10:00:21 [DEBUG] Checking available disk space.
+2024-09-26 10:00:22 [INFO] Current disk usage: 85%.
+2024-09-26 10:00:23 [INFO] User 456 logged in.
+2024-09-26 10:00:24 [DEBUG] Loading user preferences for user_id=456.
+2024-09-26 10:00:25 [INFO] User 456 accessed the settings page.
+2024-09-26 10:00:26 [ERROR] Unable to save user preferences: permission denied.
+2024-09-26 10:00:27 [INFO] User 456 logged out.
+2024-09-26 10:00:28 [DEBUG] Cleaning up session data for user_id=456.
+2024-09-26 10:00:29 [INFO] Application stopped unexpectedly.
+2024-09-26 10:00:30 [DEBUG] Checking application logs for errors.
+2024-09-26 10:00:31 [ERROR] Uncaught exception in main loop: KeyError.
+2024-09-26 10:00:32 [INFO] Restarting application...
+2024-09-26 10:00:33 [INFO] Application restarted successfully.
+2024-09-26 10:00:34 [DEBUG] Reinitializing user sessions.
+2024-09-26 10:00:35 [INFO] User 789 accessed the homepage.
+2024-09-26 10:00:36 [WARNING] Slow response time detected for user 789.
+2024-09-26 10:00:37 [INFO] Caching homepage data for user 789.
+2024-09-26 10:00:38 [DEBUG] Cache hit for homepage data.
+2024-09-26 10:00:39 [INFO] User 789 logged out.
+2024-09-26 10:00:40 [INFO] User 101 accessed the dashboard.
+2024-09-26 10:00:41 [ERROR] Dashboard widget failed to load: API error.
+2024-09-26 10:00:42 [INFO] Retrying to load dashboard widget...
+2024-09-26 10:00:43 [DEBUG] Fetching data for widget from API.
+2024-09-26 10:00:44 [INFO] Dashboard widget loaded successfully.
+2024-09-26 10:00:45 [WARNING] User 101 has a weak password.
+2024-09-26 10:00:46 [INFO] User 101 changed their password.
+2024-09-26 10:00:47 [DEBUG] Password change request initiated.
+2024-09-26 10:00:48 [INFO] User 101 logged out.
+2024-09-26 10:00:49 [INFO] Application performing health check.
+2024-09-26 10:00:50 [DEBUG] Health check response: 200 OK.
+2024-09-26 10:00:51 [INFO] User 202 logged in.
+2024-09-26 10:00:52 [INFO] User 202 accessed the help page.
+2024-09-26 10:00:53 [WARNING] Help page content is outdated.
+2024-09-26 10:00:54 [INFO] User 202 logged out.
+2024-09-26 10:00:55 [DEBUG] User session data cleared for user_id=202.
+2024-09-26 10:00:56 [INFO] Application processing request from user 303.
+2024-09-26 10:00:57 [ERROR] Failed to process user request: invalid input.
+2024-09-26 10:00:58 [INFO] Sending error response to user 303.
+2024-09-26 10:00:59 [DEBUG] Logging request data for debugging.
+2024-09-26 10:01:00 [INFO] User 404 logged in.
+2024-09-26 10:01:01 [DEBUG] Retrieving user preferences for user_id=404.
+2024-09-26 10:01:02 [INFO] User 404 accessed the profile page.
+2024-09-26 10:01:03 [WARNING] Profile page took too long to load.
+2024-09-26 10:01:04 [INFO] User 404 updated their profile.
+2024-09-26 10:01:05 [DEBUG] Profile update request processed successfully.
+2024-09-26 10:01:06 [INFO] User 404 logged out.
+2024-09-26 10:01:07 [INFO] Application cleaning up resources.
+2024-09-26 10:01:08 [DEBUG] Closing database connections.
+2024-09-26 10:01:09 [INFO] All resources cleaned up successfully.
+2024-09-26 10:01:10 [INFO] Application stopped.
+2024-09-26 10:01:11 [ERROR] Unhandled exception in worker thread: IndexError.
+2024-09-26 10:01:12 [DEBUG] Checking for unhandled exceptions.
+2024-09-26 10:01:13 [INFO] User 505 logged in.
+2024-09-26 10:01:14 [INFO] User 505 accessed the settings page.
+2024-09-26 10:01:15 [WARNING] User 505 attempted to change email to already taken.
+2024-09-26 10:01:16 [INFO] User 505 logged out.
+2024-09-26 10:01:17 [INFO] Application health check initiated.
+2024-09-26 10:01:18 [DEBUG] Health check completed successfully.
+2024-09-26 10:01:19 [INFO] User 606 logged in.
+2024-09-26 10:01:20 [INFO] User 606 accessed the admin panel.
+2024-09-26 10:01:21 [ERROR] Unauthorized access attempt by user 606.
+2024-09-26 10:01:22 [INFO] User 606 logged out.
+2024-09-26 10:01:23 [INFO] Application received shutdown signal.
+2024-09-26 10:01:24 [DEBUG] Finalizing application shutdown procedures.
+2024-09-26 10:01:25 [INFO] Application stopped gracefully.
+2024-09-26 10:01:26 [INFO] User 707 logged in.
+2024-09-26 10:01:27 [INFO] User 707 accessed the dashboard.
+2024-09-26 10:01:28 [DEBUG] Fetching latest notifications for user 707.
+2024-09-26 10:01:29 [INFO] User 707 cleared all notifications.
+2024-09-26 10:01:30 [INFO] User 707 logged out.
+2024-09-26 10:01:31 [INFO] User 808 logged in.
+2024-09-26 10:01:32 [DEBUG] Loading user settings for user_id=808
+2024-09-26 10:01:11 [ERROR] Unhandled exception in worker thread: IndexError.
+2024-09-26 10:01:12 [DEBUG] Checking for unhandled exceptions.
+2024-09-26 10:01:13 [INFO] User 505 logged in.
+2024-09-26 10:01:14 [INFO] User 505 accessed the settings page.
+2024-09-26 10:01:15 [WARNING] User 505 attempted to change email to already taken.
+2024-09-26 10:01:16 [INFO] User 505 logged out.
+2024-09-26 10:01:17 [INFO] Application health check initiated.
+2024-09-26 10:01:18 [DEBUG] Health check completed successfully.
+2024-09-26 10:01:19 [INFO] User 606 logged in.
+2024-09-26 10:01:20 [INFO] User 606 accessed the admin panel.
+2024-09-26 10:01:21 [ERROR] Unauthorized access attempt by user 606.
+2024-09-26 10:01:22 [INFO] User 606 logged out.
+2024-09-26 10:01:23 [INFO] Application received shutdown signal.
+2024-09-26 10:01:24 [DEBUG] Finalizing application shutdown procedures.
+2024-09-26 10:01:25 [INFO] Application stopped gracefully.
+2024-09-26 10:01:26 [INFO] User 707 logged in.
+2024-09-26 10:01:27 [INFO] User 707 accessed the dash
