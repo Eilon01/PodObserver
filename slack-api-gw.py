@@ -101,27 +101,11 @@ def get_pods_command():
     
         if response.ok:
             pods_list = response.json()  # Get the response from the K8s API
-            
-            # Function to format pod information for Slack
-            def format_pods_info(pods):
-                # Prepare the header with markdown
-                header = "*Here are all the pods in your cluster:*\n" + \
-                        f"{'Namespace':<20} {'Name':<20} {'Status':<20} {'Age':<10} {'Version':<10}\n"
-            
-                # Create a formatted string for each pod
-                output = [
-                    f"{pod['namespace']:<20} {pod['name']:<20} {pod['status']:<20} {pod['age']:<10} {pod['version']}"
-                    for pod in pods
-                ]
 
-                # Join header and pod information
-                return header + "\n".join(output)
-
-            # Call the function and save the result in a variable
-            pods_info = format_pods_info(pods_list)
+            print(pods_list)
 
             # Prepare message for Slack
-            message = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": pods_info}}]}
+            message = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": pods_list}}]}
 
             # Send the formatted message to Slack
             send_message(channel_id, message['blocks'])
