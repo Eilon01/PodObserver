@@ -11,7 +11,8 @@ import time
 # Load .env file containing Slack token and signing secret
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
-K8S_QUESTIONER_SERVICE_URL = os.getenv('K8S_QUESTIONER_SERVICE_URL')  ###+================== FOR TESTINGGGG
+
+K8S_QUESTIONER_SERVICE_URL = os.getenv('K8S_QUESTIONER_SERVICE_URL')
 # Fetch Slack token and signing secret from environment variables
 SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_SIGNING_SECRET = os.getenv('SLACK_SIGNING_SECRET')
@@ -156,4 +157,4 @@ def get_logs_command():
 
 # Run the Flask application
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=6000, debug=True)

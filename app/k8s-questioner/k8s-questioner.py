@@ -116,4 +116,4 @@ def get_logs():
 
 # Run Flask
 if __name__ == "__main__":
-    app.run(port=5001, debug=True)  # Assuming this runs on a different port
+    app.run(port=6001, debug=True)  

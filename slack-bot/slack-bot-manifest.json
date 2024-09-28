@@ -1,0 +1,47 @@
+{
+    "display_information": {
+        "name": "Pod-Observer",
+        "description": "Pod Observer Allows You To Get Information About Your K8s Cluster!",
+        "background_color": "#243e8c",
+        "long_description": "Pod Observer is a Slack bot designed for developers working with Kubernetes. It enables users to retrieve vital information about their running pods within a Kubernetes cluster, including details about active pods and their logs. This tool streamlines access to critical data, enhancing productivity and facilitating efficient management of Kubernetes environments."
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "Pod-Observer",
+            "always_online": false
+        },
+        "slash_commands": [
+            {
+                "command": "/help",
+                "url": "https://trusted-exactly-drum.ngrok-free.app/help",
+                "description": "Get Commands List!",
+                "should_escape": false
+            },
+            {
+                "command": "/get-pods",
+                "url": "https://trusted-exactly-drum.ngrok-free.app/get-pods",
+                "description": "Get List Of Pods Running!",
+                "should_escape": false
+            },
+            {
+                "command": "/get-logs",
+                "url": "https://trusted-exactly-drum.ngrok-free.app/get-logs",
+                "description": "Get Pod Logs!",
+                "should_escape": false
+            }
+        ]
+    },
+    "oauth_config": {
+        "scopes": {
+            "bot": [
+                "chat:write",
+                "commands"
+            ]
+        }
+    },
+    "settings": {
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false
+    }
+}
