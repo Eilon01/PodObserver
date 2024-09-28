@@ -1,0 +1,21 @@
+namespace: pod-observer
+
+pod-observer:
+  registry: docker.io
+  repository: eilon01/pod-observer
+  tag: 1.0.0
+
+  replicas: 2
+
+  ingress:
+    enable: true
+    host: my-k8s-lab.westeurope.cloudapp.azure.com
+
+k8s-questioner:
+  registry: docker.io
+  repository: eilon01/k8s-questioner
+  tag: 1.0.0
+
+  replicas: 2
+
+  

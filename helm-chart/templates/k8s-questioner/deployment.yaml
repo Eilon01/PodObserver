@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-questioner
+  namespace: pod-observer
+  labels:
+    app: k8s-questioner
+spec:
+  replicas: 2
+  serviceAccountName: k8s-questioner
+  selector:
+    matchLabels:
+      app: k8s-questioner
+  template:
+    metadata:
+      labels:
+        app: k8s-questioner
+    spec:
+      containers:
+      - name: k8s-questioner
+        image: k8s-questioner:1.0.0
+        ports:
+        - name: http
+          containerPort: 80

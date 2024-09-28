@@ -10,6 +10,7 @@ app = Flask(__name__)
 def get_pods():
     # Load Kubernetes configuration
     config.load_kube_config()
+    #config.load_incluster_config()
 
     v1 = client.CoreV1Api()
     ret = v1.list_pod_for_all_namespaces(watch=False)
@@ -18,7 +19,7 @@ def get_pods():
 
     def fetch_version(pod_ip):
         try:
-            response = requests.get(f"http://{pod_ip}/version", timeout=1)
+            response = requests.get(f"http://{pod_ip}/version", timeout=10)
             return response.text.strip() if response.status_code == 200 else "N/A"
         except requests.RequestException:
             return "N/A"

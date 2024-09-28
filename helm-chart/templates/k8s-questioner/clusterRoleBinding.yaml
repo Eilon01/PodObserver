@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pod-observer
+subjects:
+  - kind: ServiceAccount
+    name: pod-observer
+    namespace: pod-observer
+roleRef:
+  kind: ClusterRole
+  name: pod-observer
+  apiGroup: rbac.authorization.k8s.io

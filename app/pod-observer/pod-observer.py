@@ -107,7 +107,7 @@ def get_pods_command():
 
             # Prepare message for Slack
             message = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": pods_list}}]}
-
+            
             # Send the formatted message to Slack
             send_message(channel_id, message['blocks'])
         else:
@@ -116,11 +116,10 @@ def get_pods_command():
 
     except requests.exceptions.RequestException as e:
         # Handle connection errors or timeouts
-        client.chat_postMessage(channel=channel_id, text="Error: Something went wrong, please try again later or contact support.")
+        client.chat_postMessage(channel=channel_id, text="Error: Something went wrong, connection to k8s failed.")
     
 
     return Response(), 200
-
 
 # Route for handling the `/get-logs` command from Slack
 @app.route('/get-logs', methods=['POST'])

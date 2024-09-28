@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-observer
+  namespace: {{ .Values.namespace}}
+  labels:
+    app: pod-observer
+spec:
+  replicas: {{ .Values.pod-observer.replicas }}
+  selector:
+    matchLabels:
+      app: pod-observer
+  template:
+    metadata:
+      labels:
+        app: pod-observer
+    spec:
+      containers:
+      - name: pod-observer
+        image: {{ .Values.pod-observer.registry }}/{{ .Values.pod-observer.repository }}:{{ .Values.pod-observer.tag }}
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+        - name: slack-token
+          valueFrom:
+            secretKeyRef:
+              name: pod-observer
+              key: SLACK_TOKEN
+        - name: slack-signing-secret
+          valueFrom:
+            secretKeyRef:
+              name: pod-observer
+              key: SLACK_SIGNING_SECRET

@@ -40,7 +40,7 @@ COPY k8s-questioner.py .
 USER python
 
 # expose app port
-EXPOSE 5000
+EXPOSE 80
 
 # Run the application
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "k8s-questioner:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:80", "k8s-questioner:app"]
