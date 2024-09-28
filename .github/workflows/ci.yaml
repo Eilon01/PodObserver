@@ -19,10 +19,6 @@ jobs:
         id: vars
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      - name: Update build version
-        run: |
-          sed -i "s/version = .*/version = '${SHORT_SHA}'/" ${{ matrix.apps}}/app/${{ matrix.apps}}.py
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       
@@ -38,7 +34,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ${{ matrix.apps}}/app
+          context: app/${{ matrix.apps}}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pod-observer/${{ matrix.apps}}:${{ env.SHORT_SHA }}
 
