@@ -58,4 +58,8 @@ git clone https://github.com/Eilon01/PodObserver.git
 ```
 ## Configuration Steps
 1. Edit `values.yaml`, ensuring you set your Slack token, signing token, and have an endpoint for Pod Observer.
-2. Create a bot on the Slack API website using `slack-bot-manifest.json`. Be sure to update your slash command request URL to your Pod Observer endpoint.
+2. Install the chart
+```bash
+helm install pod-observer ./helm-chart/Pod-Observer --namespace pod-observer --create-namespace
+```
+3. Create a bot on the Slack API website using `slack-bot-manifest.json`. Be sure to update your slash command request URL to your Pod Observer endpoint.
