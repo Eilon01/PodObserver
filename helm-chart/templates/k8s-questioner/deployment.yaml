@@ -6,7 +6,7 @@ metadata:
   labels:
     app: k8s-questioner
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: k8s-questioner
@@ -15,10 +15,10 @@ spec:
       labels:
         app: k8s-questioner
     spec:
-      serviceAccountName: k8s-questioner
+      serviceAccountName: pod-observer
       containers:
       - name: k8s-questioner
-        image: eilon01/k8s-questioner:6e8d7c6
+        image: eilon01/k8s-questioner:5a50f2c
         ports:
         - name: http
           containerPort: 80

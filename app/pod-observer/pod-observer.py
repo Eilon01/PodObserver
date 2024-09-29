@@ -62,6 +62,10 @@ def send_message(channel_id, message_blocks):
 def format_message(message):
     return {"blocks": [{"type": "section","text": {"type": "mrkdwn","text": message}}]}
 
+@app.route('/', methods=['get'])
+def home_page():
+    return('Pod Observer Home Page')
+
 @app.route('/help', methods=['POST'])
 def help_command():
     # Verify if the incoming request is truly from Slack

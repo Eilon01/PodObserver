@@ -6,7 +6,7 @@ metadata:
   labels:
     app: pod-observer
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: pod-observer
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pod-observer
-        image: eilon01/k8s-questioner:6e8d7c6
+        image: eilon01/pod-observer:5a50f2c
         ports:
         - name: http
           containerPort: 80

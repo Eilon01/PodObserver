@@ -4,6 +4,7 @@ metadata:
   name: pod-observer
   namespace: default
 spec:
+  ingressClassName: nginx
   rules:
   - host: my-k8s-lab.westeurope.cloudapp.azure.com
     http:
