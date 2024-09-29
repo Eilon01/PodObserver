@@ -4,8 +4,8 @@ metadata:
   name: pod-observer
 subjects:
   - kind: ServiceAccount
-    name: pod-observer
-    namespace: pod-observer
+    name: po-observer
+    namespace: {{ .Values.global.namespace }}
 roleRef:
   kind: ClusterRole
   name: pod-observer

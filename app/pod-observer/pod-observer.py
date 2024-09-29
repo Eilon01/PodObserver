@@ -12,14 +12,13 @@ import time
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-K8S_QUESTIONER_SERVICE_URL = os.getenv('K8S_QUESTIONER_SERVICE_URL')
 # Fetch Slack token and signing secret from environment variables
 SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_SIGNING_SECRET = os.getenv('SLACK_SIGNING_SECRET')
-
+K8S_QUESTIONER_SERVICE = os.getenv('K8S_QUESTIONER_SERVICE')
 # Check if required environment variables are set
-if not SLACK_TOKEN or not SLACK_SIGNING_SECRET:
-    raise EnvironmentError("Missing Slack Token or Signing Secret")
+if not SLACK_TOKEN or not SLACK_SIGNING_SECRET or not K8S_QUESTIONER_SERVICE:
+    raise EnvironmentError("Missing Slack Token or Signing Secret or K8sQuestioner Endpoint")
 
 # Initialize Flask app and Slack client
 app = Flask(__name__)
@@ -102,7 +101,7 @@ def get_pods_command():
 
     try:
         # Forward command to Kubernetes API service
-        response = requests.post(f"{K8S_QUESTIONER_SERVICE_URL}/get-pods")
+        response = requests.post(f"{K8S_QUESTIONER_SERVICE}/get-pods")
     
         if response.ok:
             pods_list = response.json()  # Get the response from the K8s API
@@ -142,7 +141,7 @@ def get_logs_command():
 
     try:
         # Forward command to Kubernetes API service
-        response = requests.post(f"{K8S_QUESTIONER_SERVICE_URL}/get-logs", json={'text': text})
+        response = requests.post(f"{K8S_QUESTIONER_SERVICE}/get-logs", json={'text': text})
 
         if response.ok:
             logs_info = response.json()  # Get the response from the K8s API

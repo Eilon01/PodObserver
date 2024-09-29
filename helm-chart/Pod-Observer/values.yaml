@@ -1,0 +1,87 @@
+# Default values.yaml for Pod Observer
+
+global: 
+  namespace: pod-observer
+
+podObserver:
+  deployment:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 25%
+    replicas: 1
+
+    container:
+      appImage: eilon01/pod-observer
+      appTag: 448fa6b
+      imagePullPolicy: IfNotPresent  
+      port:
+        portName: http
+        containerPort: 5000
+      
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 256Mi
+          cpu: 100m
+
+  service:
+    serviceType: ClusterIP
+    protocol: TCP 
+    port: 80
+    ingress:
+      create: true
+      host: my-k8s-lab.westeurope.cloudapp.azure.com
+      tls:
+        create: false
+        secretName: ""
+
+  configMap:
+    data:
+      K8S_QUESTIONER_SERVICE: k8s-questioner
+
+  horizontalPodAutoscaler:
+    create: false
+    minReplicas: 1
+    maxReplicas: 3
+    resource:
+      cpuAverageUtilization: 80
+      memoryAverageUtilization: 80
+
+k8sQuestioner:
+  deployment:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 25%
+    
+    replicas: 1
+
+    container:
+      appImage: eilon01/k8s-questioner
+      appTag: 448fa6b
+      imagePullPolicy: IfNotPresent  
+      port:
+        portName: http
+        containerPort: 5000
+      
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 256Mi
+          cpu: 100m
+
+  service:
+    serviceType: ClusterIP
+    protocol: TCP 
+    port: 80
+
+  horizontalPodAutoscaler:
+    create: false
+    minReplicas: 1
+    maxReplicas: 3
+    resource:
+      cpuAverageUtilization: 80
+      memoryAverageUtilization: 80

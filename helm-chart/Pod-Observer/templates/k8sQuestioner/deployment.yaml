@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-questioner
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: k8s-questioner
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.k8sQuestioner.deployment.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.k8sQuestioner.deployment.rollingUpdate.maxSurge }}
+  {{- if .Values.k8sQuestioner.horizontalPodAutoscaler.create }}
+  replicas: {{ .Values.k8sQuestioner.deployment.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: k8s-questioner
+  template:
+    metadata:
+      labels:
+        app: k8s-questioner
+    spec:
+      serviceAccountName: pod-observer
+      containers:
+      - name: k8s-questioner
+        imagePullPolicy: {{ .Values.k8sQuestioner.deployment.container.imagePullPolicy }}
+        image: "{{ .Values.k8sQuestioner.deployment.container.appImage }}:{{ .Values.k8sQuestioner.deployment.container.appTag }}"
+        ports:
+        - name: {{ .Values.k8sQuestioner.deployment.container.port.portName }}
+          containerPort: {{ .Values.k8sQuestioner.deployment.container.port.containerPort }}
+        resources:
+          requests:
+            memory: {{ .Values.k8sQuestioner.deployment.container.resources.requests.memory }}
+            cpu: {{ .Values.k8sQuestioner.deployment.container.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.k8sQuestioner.deployment.container.resources.limits.memory }}
+            cpu: {{ .Values.k8sQuestioner.deployment.container.resources.limits.cpu }}

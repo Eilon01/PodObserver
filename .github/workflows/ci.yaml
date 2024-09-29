@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        apps: [pod-observer, k8s-questioner]
+        apps: [podObserver, k8sQuestioner]
     steps:
       
       - name: Checkout code
@@ -52,15 +52,14 @@ jobs:
         id: vars
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       
-        # sed -i "s/tag: .*/tag: ${SHORT_SHA}/" helm-chart/values.yaml
       - name: update values.yaml with new tag 
         run: |
-          sed -i "s/tag: .*/tag: ${SHORT_SHA}/" helm-chart/values.yaml
+          sed -i "s/appTag: .*/appTag: ${SHORT_SHA}/" helm-chart/podObserver/values.yaml
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update Apps Image Tag to ${{ env.SHORT_SHA }}"
           branch: main
-          file_pattern: helm-chart/values.yaml
+          file_pattern: helm-chart/podObserver/values.yaml
           

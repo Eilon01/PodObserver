@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-observer
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: pod-observer
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ .Values.podObserver.deployment.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.podObserver.deployment.rollingUpdate.maxSurge }}
+  {{- if .Values.podObserver.horizontalPodAutoscaler.create }}
+  replicas: {{ .Values.podObserver.deployment.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: pod-observer
+  template:
+    metadata:
+      labels:
+        app: pod-observer
+    spec:
+      containers:
+      - name: pod-observer
+        imagePullPolicy: {{ .Values.podObserver.deployment.container.imagePullPolicy }}
+        image: "{{ .Values.podObserver.deployment.container.appImage }}:{{ .Values.podObserver.deployment.container.appTag }}"
+        ports:
+        - name: {{ .Values.podObserver.deployment.container.port.portName }}
+          containerPort: {{ .Values.podObserver.deployment.container.port.containerPort }}
+        resources:
+          requests:
+            memory: {{ .Values.podObserver.deployment.container.resources.requests.memory }}
+            cpu: {{ .Values.podObserver.deployment.container.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.podObserver.deployment.container.resources.limits.memory }}
+            cpu: {{ .Values.podObserver.deployment.container.resources.limits.cpu }}
+        env:
+        - name: SLACK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: pod-observer
+              key: SLACK_TOKEN
+        - name: SLACK_SIGNING_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: pod-observer
+              key: SLACK_SIGNING_SECRET
+        - name: K8S_QUESTIONER_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: pod-observer
+              key: K8S_QUESTIONER_SERVICE

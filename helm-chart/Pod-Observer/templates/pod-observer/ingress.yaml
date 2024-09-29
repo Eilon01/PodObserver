@@ -1,0 +1,26 @@
+{{- if .Values.podObserver.horizontalPodAutoscaler.create }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pod-observer
+  namespace: {{ .Values.global.namespace }}
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.podObserver.service.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: pod-observer
+            port:
+              number: {{ .Values.podObserver.service.port }}
+ {{- if .Values.podObserver.service.ingress.secret }}
+    tls:
+      - hosts:
+          - {{ .Values.podObserver.service.ingress.host }}
+        secretName: {{ .Values.podObserver.service.ingress.tls.secretName }}
+{{- end }}
+{{- end }}
