@@ -102,7 +102,7 @@ def get_pods_command():
 
     try:
         # Forward command to Kubernetes API service
-        response = requests.post(f"{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-pods")
+        response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-pods")
     
         if response.ok:
             pods_list = response.json()  # Get the response from the K8s API
@@ -142,7 +142,7 @@ def get_logs_command():
 
     try:
         # Forward command to Kubernetes API service
-        response = requests.post(f"{K8S_QUESTIONER_SERVICE}/get-logs", json={'text': text})
+        response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-logs", json={'text': text})
 
         if response.ok:
             logs_info = response.json()  # Get the response from the K8s API
