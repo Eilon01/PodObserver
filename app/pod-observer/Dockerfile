@@ -40,7 +40,7 @@ COPY pod-observer.py .
 USER python
 
 # expose app port
-EXPOSE 80
+EXPOSE 5000
 
 # Run the application
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:80", "pod-observer:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "pod-observer:app"]
