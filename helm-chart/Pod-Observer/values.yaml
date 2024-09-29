@@ -40,6 +40,7 @@ podObserver:
   configMap:
     data:
       K8S_QUESTIONER_SERVICE: k8s-questioner
+      K8S_QUESTIONER_PORT: 80
 
   horizontalPodAutoscaler:
     create: false
