@@ -13,21 +13,20 @@ spec:
   sourceRepos:
   - '*'
 ---
----
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
   name: pod-observer
-  namespace: pod-observer
+  namespace: argocd
 spec:
   destination:
-    namespace: dev
+    namespace: pod-observer
     server: https://kubernetes.default.svc
   project: pod-observer
   source:
-    path: helm-chart/pod-observer
+    path: helm-chart/Pod-Observer
     repoURL: git@github.com:Eilon01/podobserver.git
     targetRevision: main
   syncPolicy:

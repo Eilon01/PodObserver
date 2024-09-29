@@ -4,5 +4,5 @@ metadata:
   name: pod-observer
   namespace: {{ .Values.global.namespace }}
 data:
-  K8S_QUESTIONER_SERVICE: {{ .Values.podObserver.configMap.data.K8S_QUESTIONER_SERVICE }}
-  K8S_QUESTIONER_PORT: {{ .Values.podObserver.configMap.data.K8S_QUESTIONER_PORT }}
+  K8S_QUESTIONER_SERVICE: {{ .Values.podObserver.configMap.data.K8S_QUESTIONER_SERVICE | quote }}
+  K8S_QUESTIONER_PORT: {{ .Values.podObserver.configMap.data.K8S_QUESTIONER_PORT | quote }}
