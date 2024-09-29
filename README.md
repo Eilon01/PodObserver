@@ -39,27 +39,22 @@ Repository stracture to help you find what you need
 └── slack-bot/
     └── slack-bot-manifest.json    = Manifest file for creating the bot
 ```
-## Key Features
+## Security:
 - Pod Observer check every request and makes sure the source is good
-- Easy to deploy - just pull the repo and update your tokens in the values.yaml
-- Pod autoscaler deployed
-- Argocd server deployed
-- Aws LB controller deployed
-- Ebs CSI controller deployed
+- backend service with no access public ip or ingress for pulling data from k8s
+- Network policy for K8s Questioner limiting breaches
 
-## Counter Service - Key Points
-- Created Dockerfile with slim base image
-- Counter is saved in redis database, backed up by pvc
-- Gets credentials with configMap
-- Deployed using a custom helm chart
-- Counter-better app with nicer ui, POST button and build version
+## Ease of use:
+- Helm chart, just update values.yaml according to your needs
+- manifest for creating the bot in slack
+- argocd and github actions ci ready for devs
 
-## Github Actions - Key Points
-- Running on every commit to main branch
-- Building and pushing new docker image to dockerhub with last commit SHA as tag
-- Updates counter-service's and counter-better's helm chart image tag 
+# Guide:
+### clone the git repository
+```bash
+git clone https://github.com/Eilon01/PodObserver.git
+```
 
-## ArgoCD - Key Points
-- Being deployed with terraform
-- Deploying apps by code
-- Using app of apps
+### Edit values.yaml, make sure you set your slack token, signing token, make sure you have an endpoint to pod observer
+
+### Create a bot in slack api website with slack-bot-manifest.json, make sure to update your slash command request url to your pod observer endpoint.

@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: k8s-questioner
+  namespace: {{ .Values.global.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: k8s-questioner
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: pod-observer
+    ports:
+    - protocol: TCP
+      port: 80
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: pod-observer
+    ports:
+    - protocol: TCP
+      port: 80
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: default 
+    ports:
+    - protocol: TCP
+      port: 443 

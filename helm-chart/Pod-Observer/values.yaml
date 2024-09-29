@@ -9,6 +9,8 @@ global:
   namespace: pod-observer
 
 podObserver:
+  appName: podObserver
+
   deployment:
     rollingUpdate:
       maxUnavailable: 0
@@ -56,6 +58,7 @@ podObserver:
       memoryAverageUtilization: 80
 
 k8sQuestioner:
+  appName: k8s-questioner
   deployment:
     rollingUpdate:
       maxUnavailable: 0
