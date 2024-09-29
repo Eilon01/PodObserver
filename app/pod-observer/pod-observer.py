@@ -62,7 +62,7 @@ def send_message(channel_id, message_blocks):
 def format_message(message):
     return {"blocks": [{"type": "section","text": {"type": "mrkdwn","text": message}}]}
 
-@app.route('/', methods=['get'])
+@app.route('/', methods=['GET'])
 def home_page():
     return('Pod Observer Home Page')
 

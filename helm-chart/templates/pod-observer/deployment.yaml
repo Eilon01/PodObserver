@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pod-observer
-        image: eilon01/pod-observer:5a50f2c
+        image: eilon01/pod-observer:94fbb3d
         ports:
         - name: http
           containerPort: 80
