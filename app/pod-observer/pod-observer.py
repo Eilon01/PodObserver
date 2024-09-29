@@ -63,7 +63,7 @@ def format_message(message):
 
 @app.route('/', methods=['GET'])
 def home_page():
-    return('Pod Observer Home Page')
+    return 'Pod Observer Home Page'
 
 @app.route('/help', methods=['POST'])
 def help_command():
