@@ -1,6 +1,6 @@
 .DS_STORE
 git-repo-secret.yaml
-mysecret.yaml
+my-secret.yaml
 .helmignore
 
 # Byte-compiled / optimized / DLL files
