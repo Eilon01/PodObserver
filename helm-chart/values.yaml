@@ -3,7 +3,7 @@ namespace: pod-observer
 pod-observer:
   registry: docker.io
   repository: eilon01/pod-observer
-  tag: 91b6689
+  tag: 448fa6b
 
   replicas: 2
 
@@ -14,7 +14,7 @@ pod-observer:
 k8s-questioner:
   registry: docker.io
   repository: eilon01/k8s-questioner
-  tag: 91b6689
+  tag: 448fa6b
 
   replicas: 2
 
