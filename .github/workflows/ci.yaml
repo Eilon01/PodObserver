@@ -58,7 +58,7 @@ jobs:
         # sed -i "s/tag: .*/tag: ${SHORT_SHA}/" helm-chart/values.yaml
       - name: update values.yaml with new tag 
         run: |
-          sed -i "s/image: eilon01/${{ matrix.apps}}: .*/image: eilon01/pod-${{ matrix.apps}}: ${SHORT_SHA}/" helm-chart/templates/${{ matrix.apps}}/deployment.yaml
+          sed -i "s/image: eilon01/${{ matrix.apps}}:.*/image: eilon01/pod-${{ matrix.apps}}:${SHORT_SHA}/" helm-chart/templates/${{ matrix.apps}}/deployment.yaml
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
