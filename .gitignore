@@ -1,5 +1,8 @@
 .DS_STORE
 git-repo-secret.yaml
+mysecret.yaml
+.helmignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
