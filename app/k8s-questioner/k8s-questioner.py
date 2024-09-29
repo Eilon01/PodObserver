@@ -9,8 +9,8 @@ app = Flask(__name__)
 @app.route('/get-pods', methods=['POST'])
 def get_pods():
     # Load Kubernetes configuration
-    config.load_kube_config()
-    #config.load_incluster_config()
+    #config.load_kube_config()
+    config.load_incluster_config()
 
     v1 = client.CoreV1Api()
     ret = v1.list_pod_for_all_namespaces(watch=False)
