@@ -36,15 +36,9 @@ spec:
       port: {{ .Values.podObserver.service.port }}
     - protocol: TCP
       port: {{ .Values.podObserver.deployment.container.port.containerPort }}
-  {{- range (lookup "v1" "Endpoints" "default" "kubernetes").subsets }}
   - to:
-      {{- range .addresses }}
       - ipBlock:
-          cidr: {{ .ip }}/32
-      {{- end }}
+          cidr: 10.0.0.0/8
     ports:
-      {{- range .ports }}
-      - protocol: {{ .protocol }}
-        port: {{ .port }}
-      {{- end }}
-  {{- end }}
+      - protocol: TCP
+        port: 6443
