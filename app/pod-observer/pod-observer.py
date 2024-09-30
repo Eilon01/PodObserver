@@ -131,12 +131,10 @@ def get_logs_command():
     channel_id = request.form.get('channel_id')
     # Text contains pod name and number of lines
     text = request.form.get('text') 
-    # Get pod name to variable, to prine later in reponse
-    pod_name = text.split()[0]
 
     try:
         # Send post requesting the logs and sending pod name and rows count
-        response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-logs", json={'user-input': text})
+        response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-logs", json={'user_input': text})
         # if post was ok, send message with logs, else return error
         if response.ok:
             logs = response.json()

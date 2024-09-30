@@ -9,7 +9,6 @@ app = Flask(__name__)
 @app.route('/get-pods', methods=['POST'])
 def get_pods():
     # Load Kubernetes configuration
-    #config.load_kube_config()
     config.load_incluster_config()
 
     v1 = client.CoreV1Api()
@@ -94,9 +93,13 @@ def get_logs():
     # Extract the text from the incoming request
     data = request.json
     # extract pod name and amount of rows
-    pods = data.get('user-input', '')
+    user_input = data.get('user_input', '')
+
+    print(user_input)
+    print(type(user_input))
+
     # split to 2 variables
-    pod_name, rows_count = pods.split()
+    pod_name, rows_count = user_input.split()
     # make rows_count an integer
     rows_count = int(rows_count)
 
