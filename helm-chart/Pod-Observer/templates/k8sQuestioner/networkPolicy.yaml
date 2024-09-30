@@ -12,24 +12,30 @@ spec:
   - Egress
   ingress:
   - from:
-    - podSelector:
+    - namespaceSelector:
+        matchLabels:
+          name: {{ .Values.global.namespace }}
+      podSelector:
         matchLabels:
           app: pod-observer
-    ports:
-    - protocol: TCP
-      port: 80
+      ports:
+      - protocol: TCP
+        port: 80
   egress:
   - to:
-    - podSelector:
+    - namespaceSelector:
+        matchLabels:
+          name: {{ .Values.global.namespace }}
+      podSelector:
         matchLabels:
           app: pod-observer
-    ports:
-    - protocol: TCP
-      port: 80
+      ports:
+      - protocol: TCP
+        port: 80
   - to:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: default 
-    ports:
-    - protocol: TCP
-      port: 443 
+      ports:
+      - protocol: TCP
+        port: 443 
