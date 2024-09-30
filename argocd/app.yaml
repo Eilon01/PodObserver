@@ -39,3 +39,4 @@ spec:
     - CreateNamespace=true
     - PrunePropagationPolicy=foreground
     - PruneLast=true
+revisionHistoryLimit: 4
