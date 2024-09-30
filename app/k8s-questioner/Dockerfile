@@ -43,4 +43,4 @@ USER python
 EXPOSE 5000
 
 # Run the application
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "k8s-questioner:app", "--log-level", "debug", "--access-logfile", "-", "--error-logfile", "-"]
+CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:5000", "k8s-questioner:app", "--log-level", "debug", "--access-logfile", "-", "--error-logfile", "-"]
