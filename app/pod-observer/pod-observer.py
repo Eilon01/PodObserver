@@ -1,38 +1,44 @@
 import slack
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 from flask import Flask, request, Response, jsonify
 import requests
 import hashlib
 import hmac
 import time
 
-# Load .env file containing Slack token and signing secret
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
-
-# Fetch Slack token and signing secret from environment variables
+# Fetch environment variables
 SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_SIGNING_SECRET = os.getenv('SLACK_SIGNING_SECRET')
 K8S_QUESTIONER_SERVICE = os.getenv('K8S_QUESTIONER_SERVICE')
 K8S_QUESTIONER_PORT= os.getenv('K8S_QUESTIONER_PORT')
-# Check if required environment variables are set
-if not SLACK_TOKEN or not SLACK_SIGNING_SECRET or not K8S_QUESTIONER_SERVICE or not K8S_QUESTIONER_PORT:
-    raise EnvironmentError("Missing Slack Token or Signing Secret or K8sQuestioner Endpoint")
+
+# Define environment variables and their human-readable names
+env_variables = {
+    'Slack Token': SLACK_TOKEN,
+    'SLACK_SIGNING_SECRET': SLACK_SIGNING_SECRET,
+    'K8S_QUESTIONER_SERVICE': K8S_QUESTIONER_SERVICE,
+    'K8S_QUESTIONER_PORT': K8S_QUESTIONER_PORT
+}
+
+# Check which variables are missing and raise error if any do
+missing_vars = [variable for variable, value in env_variables.items() if not value]
+if missing_vars:
+    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
 
 # Initialize Flask app and Slack client
 app = Flask(__name__)
 client = slack.WebClient(token=SLACK_TOKEN)
 
-# Slack request verification function using signing secret to validate authenticity
+# Verify if the request if from slack
 def verify_slack_request(request):
     
-    slack_signature = request.headers['X-Slack-Signature']  # Slack's provided signature
-    slack_request_timestamp = request.headers['X-Slack-Request-Timestamp']  # Timestamp for anti-replay protection
+    # Get slack signature and timestanp
+    slack_signature = request.headers['X-Slack-Signature']
+    slack_request_timestamp = request.headers['X-Slack-Request-Timestamp']
 
-    # Reject requests older than 5 minutes to avoid replay attacks
-    if abs(time.time() - int(slack_request_timestamp)) > 60 * 5:
+    # Reject requests older than 1 minute to avoid replay attacks
+    if abs(time.time() - int(slack_request_timestamp)) > 60:
         return False
 
     # Construct the basestring used for verification 
@@ -47,18 +53,14 @@ def verify_slack_request(request):
     # Compare the two signatures and return True if they match
     return hmac.compare_digest(my_signature, slack_signature)
 
-
-# Function to send a message to Slack using the client
+# Post a message to slack
 def send_message(channel_id, message_blocks):
     try:
-        # Post message to specified Slack channel with formatted blocks
         client.chat_postMessage(channel=channel_id, blocks=message_blocks)
     except slack.errors.SlackApiError as e:
-        # Log error if message sending fails
         print(f"Error sending message: {e.response['error']}")
 
-
-# Function to format messages for Slack in a block kit format
+# Format messages for Slack in a block kit format
 def format_message(message):
     return {"blocks": [{"type": "section","text": {"type": "mrkdwn","text": message}}]}
 
@@ -66,9 +68,10 @@ def format_message(message):
 def home_page():
     return 'Pod Observer Home Page'
 
+# Route for handling the `/help` command from Slack
 @app.route('/help', methods=['POST'])
 def help_command():
-    # Verify if the incoming request is truly from Slack
+    # Verify if the incoming request is from Slack
     if not verify_slack_request(request):
         return Response('Invalid request', status=403)
 
@@ -81,13 +84,13 @@ def help_command():
         "    Example: `/get-logs my-pod-1 50` will return the last 50 log lines from the pod named `my-pod-1`."
     )
 
-    message = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": help_message}}]}
-    
     # Retrieve channel info from Slack's request
     channel_id = request.form.get('channel_id')
 
     # Send help message to the Slack channel
+    message = format_message(help_message)
     send_message(channel_id, message['blocks'])
+    
     return Response(), 200
 
 # Route for handling the `/get-pods` command from Slack
@@ -101,28 +104,20 @@ def get_pods_command():
     channel_id = request.form.get('channel_id')
 
     try:
-        # Forward command to Kubernetes API service
+        # Send post requesting the pods data
         response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-pods")
-    
+        # if post was ok, send message with pods data, else return error
         if response.ok:
-            pods_list = response.json()  # Get the response from the K8s API
-
-            print(pods_list)
-
-            # Prepare message for Slack
-            message = {"blocks": [{"type": "section", "text": {"type": "mrkdwn", "text": pods_list}}]}
-            
-            # Send the formatted message to Slack
+            pods_list = response.json()
+            message = format_message(pods_list)
             send_message(channel_id, message['blocks'])
         else:
-            # Log the error or handle it as needed
             client.chat_postMessage(channel=channel_id, text="Error fetching pod information.")
-
+   
+    # Catch errors for not connecting to k8s questioner
     except requests.exceptions.RequestException as e:
-        # Handle connection errors or timeouts
         client.chat_postMessage(channel=channel_id, text="Error: Something went wrong, connection to k8s failed.")
     
-
     return Response(), 200
 
 # Route for handling the `/get-logs` command from Slack
@@ -134,26 +129,24 @@ def get_logs_command():
 
     # Retrieve channel info from Slack's request
     channel_id = request.form.get('channel_id')
-
     # Text contains pod name and number of lines
     text = request.form.get('text') 
-
-    print(text)
+    # Get pod name to variable, to prine later in reponse
+    pod_name = text.split()[0]
 
     try:
-        # Forward command to Kubernetes API service
-        response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-logs", json={'text': text})
-
+        # Send post requesting the logs and sending pod name and rows count
+        response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-logs", json={'user-input': text})
+        # if post was ok, send message with logs, else return error
         if response.ok:
-            logs_info = response.json()  # Get the response from the K8s API
-
-            send_message(channel_id, logs_info)
-
+            logs = response.json()
+            message = format_message(logs)
+            send_message(channel_id, message['blocks'])
         else:
             client.chat_postMessage(channel=channel_id, text="Error fetching logs.")
-        
+    
+    # Catch errors for not connecting to k8s questioner
     except requests.exceptions.RequestException as e:
-        # Handle connection errors or timeouts
         client.chat_postMessage(channel=channel_id, text="Error: Something went wrong, please try again later or contact support.")
     
     return Response(), 200

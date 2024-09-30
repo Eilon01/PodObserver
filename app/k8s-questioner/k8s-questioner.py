@@ -91,29 +91,43 @@ def get_pods():
 @app.route('/get-logs', methods=['POST'])
 def get_logs():
 
-    # fake logs
-    with open('fake-logs', 'r') as file:
-        logs = file.read()
-
     # Extract the text from the incoming request
     data = request.json
-    text = data.get('text', '')  # Get the command text
-    pod_name, num_lines = text.split()  # Assume input format is "pod_name num_lines"
-    num_lines = int(num_lines)
+    # extract pod name and amount of rows
+    pods = data.get('user-input', '')
+    # split to 2 variables
+    pod_name, rows_count = pods.split()
+    # make rows_count an integer
+    rows_count = int(rows_count)
 
-    # Split logs into lines
-    log_lines = logs.splitlines()
+    # get pod logs
+    logs = "row1\n\
+            row2\n\
+            row3\n\
+            row4\n\
+            row5\n\
+            row6"
 
-    # Ensure num_lines does not exceed available lines
-    if num_lines > len(log_lines):
-        num_lines = len(log_lines)-1
+    # Split logs to list of rows
+    logs_rows = logs.splitlines()   
 
-    # Get the last num_lines amount of logs
-    pod_logs = "\n".join(log_lines[-num_lines:])
+    # Ensure user requested rows_count does not exceed available rows
+    if rows_count > len(logs_rows):
+        rows_count = len(logs_rows)
 
-    logs_message = [{"type": "section","text": {"type": "mrkdwn","text": f"*Logs for pod '{pod_name}'*:\n{pod_logs}"}}]
+    # Update to currect amount of rows
+    pod_logs = "\n".join(logs_rows[-rows_count:])
 
-    return jsonify(logs_message)
+    # Add message
+    pod_logs= f"Logs for pod {pod_name}:\n{pod_logs}"
+
+    # Check if message is more than 4000 then remove rows until it is lower
+    while len(pod_logs) > 4000:
+        log_lines = pod_logs.splitlines()
+        log_lines.pop(1)  
+        pod_logs = "\n".join(log_lines)
+
+    return jsonify(pod_logs)
 
 # Run Flask
 if __name__ == "__main__":
