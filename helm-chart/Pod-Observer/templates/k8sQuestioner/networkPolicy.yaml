@@ -20,6 +20,8 @@ spec:
           app: pod-observer
     ports:
     - protocol: TCP
+      port: {{ .Values.podObserver.service.port }}
+    - protocol: TCP
       port: {{ .Values.podObserver.deployment.container.port.containerPort }}
   egress:
   - to:
@@ -30,6 +32,8 @@ spec:
         matchLabels:
           app: pod-observer
     ports:
+    - protocol: TCP
+      port: {{ .Values.podObserver.service.port }}
     - protocol: TCP
       port: {{ .Values.podObserver.deployment.container.port.containerPort }}
   - to:
