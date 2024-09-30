@@ -58,7 +58,7 @@ podObserver:
       memoryAverageUtilization: 80
 
 k8sQuestioner:
-  appName: k8s-questioner
+  appName: k8s-questionerw
   deployment:
     rollingUpdate:
       maxUnavailable: 0

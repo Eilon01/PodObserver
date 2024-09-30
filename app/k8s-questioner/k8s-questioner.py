@@ -73,7 +73,7 @@ def get_pods():
     age_column_width = 5
     version_column_width = 5
 
-    header = f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version':<{version_column_width}}"
+    header = f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version'}"
     output_lines.append(header)
     output_lines.append("=" * len(header))
 
