@@ -42,4 +42,4 @@ spec:
           kubernetes.io/metadata.name: default 
     ports:
     - protocol: TCP
-      port: 443 
+      port: 6443 
