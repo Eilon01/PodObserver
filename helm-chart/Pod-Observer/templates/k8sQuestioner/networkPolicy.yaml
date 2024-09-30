@@ -9,7 +9,7 @@ spec:
       app: k8s-questioner
   policyTypes:
   - Ingress
-  - Egress
+#  - Egress
   ingress:
   - from:
     - namespaceSelector:
@@ -23,29 +23,29 @@ spec:
       port: {{ .Values.podObserver.service.port }}
     - protocol: TCP
       port: {{ .Values.podObserver.deployment.container.port.containerPort }}
-  egress:
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: {{ .Values.global.namespace }}
-      podSelector:
-        matchLabels:
-          app: pod-observer
-    ports:
-    - protocol: TCP
-      port: {{ .Values.podObserver.service.port }}
-    - protocol: TCP
-      port: {{ .Values.podObserver.deployment.container.port.containerPort }}
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          kubernetes.io/metadata.name: default 
-    ports:
-    - protocol: TCP
-      port: 6443
-  - to:
-    - ipBlock:
-        cidr: 192.168.0.0/24
-    ports:
-    - protocol: TCP
-      port: 6443
+  # egress:
+  # - to:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         name: {{ .Values.global.namespace }}
+  #     podSelector:
+  #       matchLabels:
+  #         app: pod-observer
+  #   ports:
+  #   - protocol: TCP
+  #     port: {{ .Values.podObserver.service.port }}
+  #   - protocol: TCP
+  #     port: {{ .Values.podObserver.deployment.container.port.containerPort }}
+  # - to:
+  #   - namespaceSelector:
+  #       matchLabels:
+  #         kubernetes.io/metadata.name: default 
+  #   ports:
+  #   - protocol: TCP
+  #     port: 6443
+  # - to:
+  #   - ipBlock:
+  #       cidr: 192.168.0.0/24
+  #   ports:
+  #   - protocol: TCP
+  #     port: 6443
