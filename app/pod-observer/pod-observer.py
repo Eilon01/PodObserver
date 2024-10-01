@@ -67,7 +67,7 @@ def format_message(header, message):
                 {
                 "type": "header",
                 "text": {
-                    "type": "mrkdwn",
+                    "type": "plain_text",
                     "text": header
                 }
                 },
@@ -96,7 +96,7 @@ def help_command():
         return Response('Invalid request', status=403)
 
     # Define header for /help message
-    header = "*Available Commands*"
+    header = "Available Commands"
     
     # Define the help message to display when users call the `/help` command
     help_message = "*`/help`* - This command provides information on how to use the bot and its available commands.\n\n\
@@ -129,7 +129,6 @@ def get_pods_command():
         if response.ok:
             message = response.json()
             send_message(channel_id, message['blocks'])
-            print(message)
         else:
             client.chat_postMessage(channel=channel_id, text="Error: Could not connect to Kubernetes API: K8s Questioner message was not OK.")
    
@@ -158,7 +157,6 @@ def get_logs_command():
         if response.ok:
             message = response.json()
             send_message(channel_id, message['blocks'])
-            print(message)
         else:
             client.chat_postMessage(channel=channel_id, text="Error: Could not connect to Kubernetes API: K8s Questioner message was not OK.")
     
