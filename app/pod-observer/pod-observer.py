@@ -112,11 +112,11 @@ def get_pods_command():
             message = format_message(pods_list)
             send_message(channel_id, message['blocks'])
         else:
-            client.chat_postMessage(channel=channel_id, text="Error fetching pod information.")
+            client.chat_postMessage(channel=channel_id, text="Error: Could not connect to Kubernetes API: K8s Questioner message was not OK.")
    
     # Catch errors for not connecting to k8s questioner
     except requests.exceptions.RequestException as e:
-        client.chat_postMessage(channel=channel_id, text="Error: Something went wrong, connection to k8s failed.")
+        client.chat_postMessage(channel=channel_id, text="Error: Could not connect to K8s Questioner.")
     
     return Response(), 200
 
@@ -141,11 +141,11 @@ def get_logs_command():
             message = format_message(logs)
             send_message(channel_id, message['blocks'])
         else:
-            client.chat_postMessage(channel=channel_id, text="Error fetching logs.")
+            client.chat_postMessage(channel=channel_id, text="Error: Could not connect to Kubernetes API: K8s Questioner message was not OK.")
     
     # Catch errors for not connecting to k8s questioner
     except requests.exceptions.RequestException as e:
-        client.chat_postMessage(channel=channel_id, text="Error: Something went wrong, please try again later or contact support.")
+        client.chat_postMessage(channel=channel_id, text="Error: Could not connect to K8s Questioner.")
     
     return Response(), 200
 

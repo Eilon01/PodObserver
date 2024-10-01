@@ -8,15 +8,15 @@ app = Flask(__name__)
 
 @app.route('/get-pods', methods=['POST'])
 def get_pods():
+
     # Load Kubernetes configuration
     config.load_incluster_config()
-
     # Connect to kubernetes and pull pods
     try:    
         v1 = client.CoreV1Api()
         pods_list = v1.list_pod_for_all_namespaces(watch=False)
     except client.exceptions.ApiException as error:
-        return jsonify(f"Error: Could not connect to Kubernetes API:\n{error}")
+        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to get Pods information\n{error}")
     
     # Dictionary for data organizing
     namespace_pods = {}
