@@ -11,11 +11,17 @@ def get_pods():
     # Load Kubernetes configuration
     config.load_incluster_config()
 
-    v1 = client.CoreV1Api()
-    ret = v1.list_pod_for_all_namespaces(watch=False)
-
+    # Connect to kubernetes and pull pods
+    try:    
+        v1 = client.CoreV1Api()
+        pods_list = v1.list_pod_for_all_namespaces(watch=False)
+    except client.exceptions.ApiException as error:
+        return jsonify(f"Error: Could not connect to Kubernetes API:\n{error}")
+    
+    # Dictionary for data organizing
     namespace_pods = {}
 
+    # Get pod version from /version
     def fetch_version(pod_ip):
         try:
             response = requests.get(f"http://{pod_ip}/version", timeout=10)
@@ -23,6 +29,7 @@ def get_pods():
         except requests.RequestException:
             return "N/A"
 
+    # Format Creatioin timestamp to be like in kubectl
     def format_age(creation_timestamp):
         now = datetime.now(timezone.utc)
         age_seconds = (now - creation_timestamp).total_seconds()
@@ -40,8 +47,8 @@ def get_pods():
             days = int(age_seconds // 86400)
             return f"{days}d"
 
-    # Group pods by namespace
-    for pod in ret.items:
+    # Stracture everything in a dictionary
+    for pod in pods_list.items:
         pod_info = {
             'name': pod.metadata.name,
             'status': pod.status.phase,
@@ -49,7 +56,7 @@ def get_pods():
             'pod_ip': pod.status.pod_ip,
             'version': "Fetching..." if pod.status.pod_ip else "N/A"
         }
-        namespace_pods.setdefault("all", []).append(pod_info)  # Use a single key for all pods
+        namespace_pods.setdefault("all", []).append(pod_info) 
 
     # Calculate the maximum pod name length for alignment
     max_pod_name_length = max(len(pod['name']) for pods in namespace_pods.values() for pod in pods)
@@ -61,7 +68,6 @@ def get_pods():
             for pods in namespace_pods.values() 
             for idx, pod in enumerate(pods) if pod['version'] == "Fetching..."
         }
-
         for future in as_completed(future_to_pod):
             idx = future_to_pod[future]
             namespace_pods["all"][idx]['version'] = future.result()
@@ -72,10 +78,12 @@ def get_pods():
     age_column_width = 5
     version_column_width = 5
 
-    header = f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version'}"
+    # Create Header for output
+    header = f"{'Pod Name':<{max_pod_name_length}} {'Status'} {'Age'} {'Version'}"
     output_lines.append(header)
     output_lines.append("=" * len(header))
 
+    # Create Output
     for pod in namespace_pods["all"]:
         line = f"{pod['name']:<{max_pod_name_length}} {pod['status']:<{status_column_width}} {pod['age']:<{age_column_width}} {pod['version']:<{version_column_width}}"
         # Replace spaces with dashes
@@ -95,21 +103,37 @@ def get_logs():
     # extract pod name and amount of rows
     user_input = data.get('user_input', '')
 
-    print(user_input)
-    print(type(user_input))
-
-    # split to 2 variables
-    pod_name, rows_count = user_input.split()
-    # make rows_count an integer
-    rows_count = int(rows_count)
-
-    # get pod logs
-    logs = "row1\n\
-            row2\n\
-            row3\n\
-            row4\n\
-            row5\n\
-            row6"
+    # Check for valid input
+    parts = user_input.split()
+    #check if there are 2 values exactly
+    if len(parts) != 3:
+        return jsonify("Input Error: Please provide exactly three values, make sure it is in the correct order devided by space (/get-logs <pod> <namespace> <rows>).")
+    else:
+        # split to 3 variables
+        pod_name, namespace, rows_count = user_input.split()
+        
+        # Check if second value is number
+        if rows_count.isdigit():
+            rows_count = int(rows_count)
+        else:
+            return jsonify("Input Error: The third value must be a number.")
+        
+    # Check if the pod exists
+    try:   
+        config.load_incluster_config() 
+        v1 = client.CoreV1Api()
+        try:
+            v1.read_namespaced_pod(name=pod_name, namespace=namespace)
+        except client.exceptions.ApiException as error:
+            return jsonify("Error: Pod Does not exist, please recheck type error and namespace.")
+    except client.exceptions.ApiException as error:
+        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to check if Pod exists\n{error}")
+        
+    # Connect to Kubernetes and pull logs
+    try:
+        logs = v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
+    except client.exceptions.ApiException as error:
+        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
 
     # Split logs to list of rows
     logs_rows = logs.splitlines()   
@@ -118,7 +142,7 @@ def get_logs():
     if rows_count > len(logs_rows):
         rows_count = len(logs_rows)
 
-    # Update to currect amount of rows
+    # Update to user requested amount of rows
     pod_logs = "\n".join(logs_rows[-rows_count:])
 
     # Add message
