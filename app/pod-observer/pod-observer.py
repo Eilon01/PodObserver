@@ -61,8 +61,28 @@ def send_message(channel_id, message_blocks):
         print(f"Error sending message: {e.response['error']}")
 
 # Format messages for Slack in a block kit format
-def format_message(message):
-    return {"blocks": [{"type": "section","text": {"type": "mrkdwn","text": message}}]}
+def format_message(header, message):
+    return {
+  "blocks": [
+                {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": header
+                }
+                },
+                {
+                "type": "divider"
+                },
+                {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": message
+                }
+                }
+            ]
+            }
 
 @app.route('/', methods=['GET'])
 def home_page():
@@ -108,10 +128,11 @@ def get_pods_command():
         response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-pods")
         # if post was ok, send message with pods data, else return error
         if response.ok:
-            pods_list = response.json()
+            data = response.json()
+            header, pods_list = data[0], data[1]
             print(pods_list)
             print(type(pods_list))
-            message = format_message(pods_list)
+            message = format_message(header, pods_list)
             send_message(channel_id, message['blocks'])
         else:
             client.chat_postMessage(channel=channel_id, text="Error: Could not connect to Kubernetes API: K8s Questioner message was not OK.")

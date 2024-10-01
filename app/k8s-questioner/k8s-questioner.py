@@ -80,8 +80,8 @@ def get_pods():
 
     # Create Header for output
     header = f"{'Pod Name':<{max_pod_name_length}} {'Status'} {'Age'} {'Version'}"
-    output_lines.append(header)
-    output_lines.append("=" * len(header))
+    # output_lines.append(header)
+    # output_lines.append("=" * len(header))
 
     # Create Output
     for pod in namespace_pods["all"]:
@@ -93,7 +93,7 @@ def get_pods():
     # Join all lines into a single string
     pods = "\n".join(output_lines)
 
-    return jsonify(pods)
+    return jsonify(header,pods)
 
 @app.route('/get-logs', methods=['POST'])
 def get_logs():
