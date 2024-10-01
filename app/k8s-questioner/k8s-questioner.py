@@ -172,12 +172,12 @@ def get_logs():
     # Split logs to list of rows
     #log_lines = logs.splitlines()   
 
-    # Check if message is more than 4000 then remove rows until it is lower
-    # while len(logs) > 3500:
-    #     log_lines = logs.splitlines()
-    #     log_lines.pop(0)  
-    #     logs = "\n".join(log_lines)
-    #     print("removed line")
+    # Check if message is more than 1000 then remove rows until it is lower
+    while len(logs) > 1000:
+        log_lines = logs.splitlines()
+        log_lines.pop(0)  
+        logs = "\n".join(log_lines)
+        print("removed line")
 
     print("************************this is logs*************************\n"+logs)
 
