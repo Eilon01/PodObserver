@@ -99,7 +99,7 @@ def get_pods():
 def get_logs():
 
     # Check if pod exists in the cluster
-    def check_pod_exists(pod_name):
+    def check_pod_exists_and_get_ns(pod_name):
         config.load_incluster_config() 
         v1 = client.CoreV1Api() 
         # List all pods in all namespaces
@@ -107,8 +107,8 @@ def get_logs():
         
         for pod in pods.items:
             if pod.metadata.name == pod_name:
-                return True # Pod exists
-        return False    # Pod does not exist
+                return pod.metadata.namespace # Pod exists, send its namespace
+        return None    # Pod does not exist
         
     # Extract the text from the incoming request
     data = request.json
@@ -118,22 +118,25 @@ def get_logs():
     # Check for valid input
     parts = user_input.split()
     #check if there are 2 values exactly
-    if len(parts) != 3:
-        return jsonify("Input Error: Please provide exactly three values, make sure it is in the correct order devided by space (/get-logs <pod> <namespace> <rows>).")
+    if len(parts) != 2:
+        return jsonify("Input Error: Please provide exactly two values, make sure it is in the correct order (/get-logs <pod> <rows>).")
     else:
-        # split to 3 variables
-        pod_name, namespace, rows_count = user_input.split()
+        # split to 2 variables
+        pod_name, rows_count = user_input.split()
         
         # Check if second value is number
         if rows_count.isdigit():
             rows_count = int(rows_count)
         else:
-            return jsonify("Input Error: The third value must be a number.")
+            return jsonify("Input Error: The second value must be a number.")
         
-    # Check if the pod exists
+    # Check if the pod exists and its namespace
     try:
-        if not check_pod_exists('your-pod-name'):
-            return jsonify("Error: Pod Does not exist, please recheck type error and namespace.")
+        namespace = check_pod_exists_and_get_ns(pod_name)
+        if namespace is not None:
+            pass
+        else:
+            return jsonify("Error: Pod Does not exist.")
     except client.exceptions.ApiException as error:
         return jsonify(f"Error: Could not connect to Kubernetes API: Unable to check if Pod exists\n{error}")
         
