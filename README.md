@@ -2,6 +2,10 @@
 
 Pod Observer is a Slack bot designed to monitor and gather detailed information about running pods within a cluster. It offers real-time tracking of pod status, uptime, version, and logs, providing visibility into pod lifecycle events and health.
 
+Pod Observer contains two services:
+- Pod Observer: Handles communication with Slack and validates incoming requests.
+- K8s Questioner: Fetches data from the Kubernetes API and passes it to Pod Observer.
+
 ## Features
 - List all running pods in the cluster with their current status.
 - Track pod uptime and version information.
@@ -42,16 +46,16 @@ To help you find what you need, here is the repository structure:
 ```
 
 ## Security
-- Pod Observer checks every request to ensure the source is valid.
-- The backend service has no public IP or ingress access for pulling data from Kubernetes.
-- Network policy for k8s-questioner limits unauthorized access.
+- Pod Observer checks every request to ensure validating the source is slack.
+- The backend service has no public IP or outside access for securing the kubernetes api.
+- Ingress Network policy applied for securing K8s Questioner.
 
 ## Ease of Use
 - Helm chart: Simply update `values.yaml` according to your needs.
 - Manifest for creating the bot in Slack.
 - ArgoCD and GitHub Actions CI ready for developers.
 
-## Guide
+## Deploying Guide
 ### Clone the Git Repository
 ```bash
 git clone https://github.com/Eilon01/PodObserver.git
