@@ -13,19 +13,19 @@
         "slash_commands": [
             {
                 "command": "/help",
-                "url": "https://trusted-exactly-drum.ngrok-free.app/help",
+                "url": "<Your-URL>/help",
                 "description": "Get Commands List!",
                 "should_escape": false
             },
             {
                 "command": "/get-pods",
-                "url": "https://trusted-exactly-drum.ngrok-free.app/get-pods",
+                "url": "<Your-URL>/get-pods",
                 "description": "Get List Of Pods Running!",
                 "should_escape": false
             },
             {
                 "command": "/get-logs",
-                "url": "https://trusted-exactly-drum.ngrok-free.app/get-logs",
+                "url": "<Your-URL>/get-logs",
                 "description": "Get Pod Logs!",
                 "should_escape": false
             }
