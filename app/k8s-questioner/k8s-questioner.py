@@ -79,7 +79,7 @@ def get_pods():
     version_column_width = 5
 
     # Create Header for output
-    header = f"{'Pod Name':<{max_pod_name_length}} {'Status'} {'Age'} {'Version'}"
+    header = f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version'}"
     # output_lines.append(header)
     # output_lines.append("=" * len(header))
 
@@ -145,32 +145,28 @@ def get_logs():
         config.load_incluster_config() 
         v1 = client.CoreV1Api() 
         logs = v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
-        return jsonify(logs)
     except client.exceptions.ApiException as error:
         return jsonify(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
 
-    # Split logs to list of rows
-    logs_rows = logs.splitlines()   
+    # # Split logs to list of rows
+    # logs_rows = logs.splitlines()   
 
-    # Ensure user requested rows_count does not exceed available rows
-    if rows_count > len(logs_rows):
-        rows_count = len(logs_rows)
+    # # Ensure user requested rows_count does not exceed available rows
+    # if rows_count > len(logs_rows):
+    #     rows_count = len(logs_rows)
 
-    # Update to user requested amount of rows
-    pod_logs = "\n".join(logs_rows[-rows_count:])
+    # # Update to user requested amount of rows
+    # logs = "\n".join(logs_rows[-rows_count:])
 
-    # Add message
-    pod_logs= f"Logs for pod {pod_name}:\n========================\n{pod_logs}"
+    # # Check if message is more than 4000 then remove rows until it is lower
+    # while len(logs) > 3500:
+    #     log_lines = logs.splitlines()
+    #     log_lines.pop(0)  
+    #     logs = "\n".join(log_lines)
 
-    # Check if message is more than 4000 then remove rows until it is lower
-    # while len(pod_logs) > 3500:
-    #     log_lines = pod_logs.splitlines()
-    #     log_lines.pop(1)  
-    #     pod_logs = "\n".join(log_lines)
+    print(logs)
 
-    print(pod_logs)
-    return jsonify(pod_logs)
-
-# # Run Flask
-# if __name__ == "__main__":
-#     app.run(port=6001, debug=True)  
+    # Add header
+    header = f"Logs for pod {pod_name}:"
+    
+    return jsonify(header, logs)

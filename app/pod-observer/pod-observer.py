@@ -160,10 +160,11 @@ def get_logs_command():
         response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-logs", json={'user_input': text})
         # if post was ok, send message with logs, else return error
         if response.ok:
-            logs = response.json()
+            data = response.json()
+            header, logs = data[0], data[1]
             print(logs)
             print(type(logs))
-            message = format_message(logs)
+            message = format_message(header,logs)
             client.chat_postMessage(channel=channel_id, text=logs)
             #send_message(channel_id, message['blocks'])
         else:
@@ -174,7 +175,3 @@ def get_logs_command():
         client.chat_postMessage(channel=channel_id, text="Error: Could not connect to K8s Questioner.")
     
     return Response(), 200
-
-# # Run the Flask application
-# if __name__ == "__main__":
-#     app.run(port=6000, debug=True)
