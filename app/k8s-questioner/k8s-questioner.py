@@ -17,7 +17,7 @@ def get_pods():
         v1 = client.CoreV1Api()
         pods_list = v1.list_pod_for_all_namespaces(watch=False)
     except client.exceptions.ApiException as error:
-        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to get Pods information\n{error}")
+        return jsonify(f"Error:" ,"Could not connect to Kubernetes API: Unable to get Pods information\n{error}")
     
     # Dictionary for data organizing
     namespace_pods = {}
@@ -137,7 +137,7 @@ def get_logs():
     parts = user_input.split()
     #check if there are 2 values exactly
     if len(parts) != 2:
-        return jsonify("Input Error: Please provide exactly two values, make sure it is in the correct order (/get-logs <pod> <rows>).")
+        return jsonify("Input Error:" ,"Please provide exactly two values, make sure it is in the correct order (/get-logs <pod> <rows>).")
     else:
         # split to 2 variables
         pod_name, rows_count = user_input.split()
@@ -146,7 +146,7 @@ def get_logs():
         if rows_count.isdigit():
             rows_count = int(rows_count)
         else:
-            return jsonify("Input Error: The second value must be a number.")
+            return jsonify("Input Error:" ,"The second value must be a number.")
         
     # Check if the pod exists and its namespace
     try:
@@ -154,9 +154,9 @@ def get_logs():
         if namespace is not None:
             pass
         else:
-            return jsonify("Error: Pod Does not exist.")
+            return jsonify("Error:" ,"Pod Does not exist.")
     except client.exceptions.ApiException as error:
-        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to check if Pod exists\n{error}")
+        return jsonify(f"Error:" ,"Could not connect to Kubernetes API: Unable to check if Pod exists\n{error}")
         
     # Connect to Kubernetes and pull logs
     try:
@@ -164,7 +164,7 @@ def get_logs():
         v1 = client.CoreV1Api() 
         logs = v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
     except client.exceptions.ApiException as error:
-        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
+        return jsonify(f"Error:" ,"Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
     
     # format the log
     logs = format_log_message(logs,rows_count)
@@ -179,7 +179,7 @@ def get_logs():
     #     logs = "\n".join(log_lines)
     #     print("removed line")
 
-    print("this is logs: "+logs)
+    print("************************this is logs*************************\n"+logs)
 
     # Add header
     header = f"Logs for pod {pod_name}:"
