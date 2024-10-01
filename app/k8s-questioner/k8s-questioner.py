@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
+import textwrap
 
 app = Flask(__name__)
 
@@ -110,6 +111,25 @@ def get_logs():
                 return pod.metadata.namespace # Pod exists, send its namespace
         return None    # Pod does not exist
         
+    # wrap line longet than 100 and add as newline
+    def format_log_message(log, rows_count, width=100):
+        logs_rows = []
+        
+        lines = log.splitlines()
+        
+        for line in lines:
+            wrapped = textwrap.wrap(line, width=width)
+            logs_rows.extend(wrapped)
+        
+        # Ensure user requested rows_count does not exceed available rows
+        if rows_count > len(logs_rows):
+            rows_count = len(logs_rows)
+
+        # Update to user requested amount of rows
+        logs = "\n".join(logs_rows[-rows_count:])
+       
+        return (logs)
+
     # Extract the text from the incoming request
     data = request.json
     # extract pod name and amount of rows
@@ -147,24 +167,21 @@ def get_logs():
         logs = v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
     except client.exceptions.ApiException as error:
         return jsonify(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
- 
-    # # Split logs to list of rows
-    # logs_rows = logs.splitlines()   
+    
+    # format the log
+    logs = format_log_message(logs,rows_count)
 
-    # # Ensure user requested rows_count does not exceed available rows
-    # if rows_count > len(logs_rows):
-    #     rows_count = len(logs_rows)
+    # Split logs to list of rows
+    log_lines = logs.splitlines()   
 
-    # # Update to user requested amount of rows
-    # logs = "\n".join(logs_rows[-rows_count:])
+    # Check if message is more than 4000 then remove rows until it is lower
+    while len(logs) > 3500:
+        log_lines = logs.splitlines()
+        log_lines.pop(0)  
+        logs = "\n".join(log_lines)
+        print("removed line")
 
-    # # Check if message is more than 4000 then remove rows until it is lower
-    # while len(logs) > 3500:
-    #     log_lines = logs.splitlines()
-    #     log_lines.pop(0)  
-    #     logs = "\n".join(log_lines)
-
-    print(logs)
+    print("this is logs: "+logs)
 
     # Add header
     header = f"Logs for pod {pod_name}:"
