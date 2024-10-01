@@ -19,7 +19,7 @@ podObserver:
 
     container:
       appImage: eilon01/pod-observer
-      appTag: 4cd92e9
+      appTag: b37c4e7
       imagePullPolicy: IfNotPresent  
       port:
         portName: http
@@ -68,7 +68,7 @@ k8sQuestioner:
 
     container:
       appImage: eilon01/k8s-questioner
-      appTag: 4cd92e9
+      appTag: b37c4e7
       imagePullPolicy: IfNotPresent  
       port:
         portName: http
