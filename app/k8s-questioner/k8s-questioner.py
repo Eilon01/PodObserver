@@ -145,6 +145,7 @@ def get_logs():
         config.load_incluster_config() 
         v1 = client.CoreV1Api() 
         logs = v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
+        return jsonify(logs)
     except client.exceptions.ApiException as error:
         return jsonify(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
 
