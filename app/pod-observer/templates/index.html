@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pod Observer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        .stats, .search, .logs {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .stats p, .logs pre {
+            margin: 5px 0;
+        }
+        .search input[type="text"] {
+            padding: 10px;
+            width: calc(100% - 100px);
+            margin-right: 10px;
+        }
+        .search input[type="submit"] {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Pod Observer</h1>
+    <p>Real-time Monitoring for Kubernetes Pods</p>
+</header>
+
+<div class="container">
+    <!-- Features Section -->
+    <div class="stats">
+        <h2>Current Cluster Overview</h2>
+        <p><strong>Total Pods:</strong> 125</p>
+        <p><strong>Running:</strong> 110</p>
+        <p><strong>Pending:</strong> 10</p>
+        <p><strong>Failed:</strong> 5</p>
+    </div>
+
+    <!-- Search Pod Section -->
+    <div class="search">
+        <h2>Search for a Pod</h2>
+        <form action="#" method="POST">
+            <input type="text" name="pod-name" placeholder="Pod Name / Namespace" />
+            <input type="submit" value="Search" />
+        </form>
+    </div>
+
+    <!-- Latest Logs Section -->
+    <div class="logs">
+        <h2>Latest Logs</h2>
+        <pre>
+{"level":"info","ts":"2024-10-01T10:29:39.300435Z", 
+ "caller":"mvcc/kvstore_compaction.go:69", 
+ "msg":"finished scheduled compaction", 
+ "compact-revision":389881}
+        </pre>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    Kubernetes Monitoring Tool | © 2024 Pod Observer
+</div>
+
+</body>
+</html>

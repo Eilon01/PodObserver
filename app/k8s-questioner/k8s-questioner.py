@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
-import textwrap
 
 app = Flask(__name__)
 
@@ -135,19 +134,6 @@ def get_pods():
     status_column_width = 10
     age_column_width = 5
     version_column_width = 5
-
-    # Create Header for output
-    # header = f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version'}"
-
-    # # Create Output
-    # for pod in namespace_pods["all"]:
-    #     line = f"{pod['name']:<{max_pod_name_length}} {pod['status']:<{status_column_width}} {pod['age']:<{age_column_width}} {pod['version']:<{version_column_width}}"
-    #     # Replace spaces with dashes
-    #     line = line.replace(" ", "-")
-    #     output_lines.append(line)
-
-    # Join all lines into a single string
-    # pods = "\n".join(output_lines)
 
     # Generate the pod output
     output_lines = create_pod_output(namespace_pods)

@@ -1,7 +1,7 @@
 import slack
 import os
 from pathlib import Path
-from flask import Flask, request, Response, jsonify
+from flask import Flask, request, Response, jsonify, render_template
 import requests
 import hashlib
 import hmac
@@ -67,7 +67,7 @@ def format_message(header, message):
                 {
                 "type": "header",
                 "text": {
-                    "type": "plain_text",
+                    "type": "mrkdwn",
                     "text": header
                 }
                 },
@@ -77,7 +77,7 @@ def format_message(header, message):
                 {
                 "type": "section",
                 "text": {
-                    "type": "plain_text",
+                    "type": "mrkdwn",
                     "text": message
                 }
                 }
@@ -86,7 +86,7 @@ def format_message(header, message):
 
 @app.route('/', methods=['GET'])
 def home_page():
-    return 'Pod Observer Home Page'
+    return render_template('index.html')
 
 # Route for handling the `/help` command from Slack
 @app.route('/help', methods=['POST'])
@@ -95,9 +95,11 @@ def help_command():
     if not verify_slack_request(request):
         return Response('Invalid request', status=403)
 
+    # Define header for /help message
+    header = "*Available Commands*"
+    
     # Define the help message to display when users call the `/help` command
     help_message = (
-        "*Available Commands*\n\n"
         "*`/help`* - This command provides information on how to use the bot and its available commands.\n\n"
         "*`/get-pods`* - Lists all the running pods in the Kubernetes cluster, their uptime, and the version of each service.\n\n"
         "*`/get-logs <pod-name> <n>`* - Retrieves the last n log lines from the specified pod.\n"
@@ -108,7 +110,7 @@ def help_command():
     channel_id = request.form.get('channel_id')
 
     # Send help message to the Slack channel
-    message = format_message(help_message)
+    message = format_message(header, help_message)
     send_message(channel_id, message['blocks'])
     
     return Response(), 200
@@ -128,10 +130,9 @@ def get_pods_command():
         response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-pods")
         # if post was ok, send message with pods data, else return error
         if response.ok:
-            data = response.json()
-            header, pods_list = data[0], data[1]
-            message = format_message(header, pods_list)
+            message = response.json()
             send_message(channel_id, message['blocks'])
+            print(message)
         else:
             client.chat_postMessage(channel=channel_id, text="Error: Could not connect to Kubernetes API: K8s Questioner message was not OK.")
    
@@ -159,8 +160,6 @@ def get_logs_command():
         # if post was ok, send message with logs, else return error
         if response.ok:
             message = response.json()
-            #message = format_message(logs)
-            # client.chat_postMessage(channel=channel_id, text=logs)
             send_message(channel_id, message['blocks'])
             print(message)
         else:

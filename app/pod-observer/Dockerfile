@@ -35,6 +35,7 @@ COPY --from=builder /usr/local/bin/gunicorn /usr/local/bin/gunicorn
 
 # Copy app files to container
 COPY pod-observer.py .
+COPY templates/ .
 
 # Switch to new user
 USER python
