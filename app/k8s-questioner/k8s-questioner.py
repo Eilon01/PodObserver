@@ -159,10 +159,10 @@ def get_logs():
     pod_logs = "\n".join(logs_rows[-rows_count:])
 
     # Add message
-    pod_logs= f"Logs for pod {pod_name}:\n{pod_logs}"
+    pod_logs= f"Logs for pod {pod_name}:\n========================\n{pod_logs}"
 
     # Check if message is more than 4000 then remove rows until it is lower
-    while len(pod_logs) > 4000:
+    while len(pod_logs) > 3500:
         log_lines = pod_logs.splitlines()
         log_lines.pop(1)  
         pod_logs = "\n".join(log_lines)
