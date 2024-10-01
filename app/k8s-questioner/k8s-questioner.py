@@ -6,6 +6,20 @@ from datetime import datetime, timezone
 
 app = Flask(__name__)
 
+def error_block(error):
+        return {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": error
+                            }
+                        }
+                    ]
+                }
+
+
 @app.route('/get-pods', methods=['POST'])
 def get_pods():
 
@@ -99,7 +113,7 @@ def get_pods():
         v1 = client.CoreV1Api()
         pods_list = v1.list_pod_for_all_namespaces(watch=False)
     except client.exceptions.ApiException as error:
-        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to get Pods information\n{error}")
+        return jsonify(error_block(f"Error: Could not connect to Kubernetes API: Unable to get Pods information\n{error}"))
     
     # Dictionary for data organizing
     namespace_pods = {}
@@ -157,7 +171,7 @@ def get_logs():
             if pod.metadata.name == pod_name:
                 return pod.metadata.namespace # Pod exists, send its namespace
         return None    # Pod does not exist
-            
+        
     def get_rows(log, rows_count):
         # Split log into lines
         lines = log.splitlines()
@@ -208,7 +222,7 @@ def get_logs():
     parts = user_input.split()
     #check if there are 2 values exactly
     if len(parts) != 2:
-        return jsonify("Input Error: Please provide exactly two values, make sure it is in the correct order (/get-logs <pod> <rows>).")
+        return jsonify(error_block("Input Error: Please provide exactly two values, make sure it is in the correct order (/get-logs <pod> <rows>)."))
     else:
         # split to 2 variables
         pod_name, rows_count = user_input.split()
@@ -217,7 +231,7 @@ def get_logs():
         if rows_count.isdigit():
             rows_count = int(rows_count)
         else:
-            return jsonify("Input Error: The second value must be a number.")
+            return jsonify(error_block("Input Error: The second value must be a number."))
         
     # Check if the pod exists and its namespace
     try:
@@ -225,9 +239,9 @@ def get_logs():
         if namespace is not None:
             pass
         else:
-            return jsonify("Error: Pod Does not exist.")
+            return jsonify(error_block("Error: Pod Does not exist."))
     except client.exceptions.ApiException as error:
-        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to check if Pod exists\n{error}")
+        return jsonify(error_block(f"Error: Could not connect to Kubernetes API: Unable to check if Pod exists\n{error}"))
         
     # Connect to Kubernetes and pull logs
     try:
@@ -235,7 +249,7 @@ def get_logs():
         v1 = client.CoreV1Api() 
         logs = v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
     except client.exceptions.ApiException as error:
-        return jsonify(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
+        return jsonify(error_block(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}"))
     
     # get currect amount of rows
     logs = get_rows(logs,rows_count)
