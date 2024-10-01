@@ -98,6 +98,18 @@ def get_pods():
 @app.route('/get-logs', methods=['POST'])
 def get_logs():
 
+    # Check if pod exists in the cluster
+    def check_pod_exists(pod_name):
+        config.load_incluster_config() 
+        v1 = client.CoreV1Api() 
+        # List all pods in all namespaces
+        pods = v1.list_pod_for_all_namespaces(watch=False)
+        
+        for pod in pods.items:
+            if pod.metadata.name == pod_name:
+                return True # Pod exists
+        return False    # Pod does not exist
+        
     # Extract the text from the incoming request
     data = request.json
     # extract pod name and amount of rows
@@ -119,18 +131,16 @@ def get_logs():
             return jsonify("Input Error: The third value must be a number.")
         
     # Check if the pod exists
-    try:   
-        config.load_incluster_config() 
-        v1 = client.CoreV1Api()
-        try:
-            v1.read_namespaced_pod(name=pod_name, namespace=namespace)
-        except client.exceptions.ApiException as error:
+    try:
+        if not check_pod_exists('your-pod-name'):
             return jsonify("Error: Pod Does not exist, please recheck type error and namespace.")
     except client.exceptions.ApiException as error:
         return jsonify(f"Error: Could not connect to Kubernetes API: Unable to check if Pod exists\n{error}")
         
     # Connect to Kubernetes and pull logs
     try:
+        config.load_incluster_config() 
+        v1 = client.CoreV1Api() 
         logs = v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
     except client.exceptions.ApiException as error:
         return jsonify(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
