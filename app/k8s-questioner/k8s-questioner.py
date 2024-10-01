@@ -10,18 +10,6 @@ app = Flask(__name__)
 @app.route('/get-pods', methods=['POST'])
 def get_pods():
 
-    # Load Kubernetes configuration
-    config.load_incluster_config()
-    # Connect to kubernetes and pull pods
-    try:    
-        v1 = client.CoreV1Api()
-        pods_list = v1.list_pod_for_all_namespaces(watch=False)
-    except client.exceptions.ApiException as error:
-        return jsonify(f"Error:" ,"Could not connect to Kubernetes API: Unable to get Pods information\n{error}")
-    
-    # Dictionary for data organizing
-    namespace_pods = {}
-
     # Get pod version from /version
     def fetch_version(pod_ip):
         try:
@@ -47,6 +35,75 @@ def get_pods():
         else:  # 2 days or more
             days = int(age_seconds // 86400)
             return f"{days}d"
+
+    def create_pod_output(namespace_pods):
+        output_lines = []
+        
+        # Create Output lines for each pod
+        for pod in namespace_pods["all"]:
+            line = f"{pod['name']:<{max_pod_name_length}} {pod['status']:<{status_column_width}} {pod['age']:<{age_column_width}} {pod['version']:<{version_column_width}}"
+            # Replace spaces with dashes
+            line = line.replace(" ", "-")
+            output_lines.append(line)
+    
+        return output_lines
+
+    def format_message(output_lines, max_length):
+        blocks = [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version'}"
+                }
+            },
+            {
+                "type": "divider"
+            }
+        ]
+        
+        current_chunk = ""
+        for line in output_lines:
+            # Append the current line and check if it exceeds max_length
+            if len(current_chunk) + len(line) + 1 > max_length:  # +1 for the newline
+                # If it exceeds, add the current chunk to blocks and start a new one
+                blocks.append({
+                    "type": "section",
+                    "text": {
+                        "type": "plain_text",
+                        "text": current_chunk.strip()  # Strip to remove trailing newlines
+                    }
+                })
+                current_chunk = ""  # Start a new chunk
+            
+            # Add the line to the current chunk
+            current_chunk += line + "\n"
+        
+        # Add the last chunk if there's any remaining content
+        if current_chunk:
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "plain_text",
+                    "text": current_chunk.strip()
+                }
+            })
+        
+        return {
+            "blocks": blocks
+        }
+
+    # Load Kubernetes configuration
+    config.load_incluster_config()
+    # Connect to kubernetes and pull pods
+    try:    
+        v1 = client.CoreV1Api()
+        pods_list = v1.list_pod_for_all_namespaces(watch=False)
+    except client.exceptions.ApiException as error:
+        return jsonify(f"Error:" ,"Could not connect to Kubernetes API: Unable to get Pods information\n{error}")
+    
+    # Dictionary for data organizing
+    namespace_pods = {}
 
     # Stracture everything in a dictionary
     for pod in pods_list.items:
@@ -80,19 +137,25 @@ def get_pods():
     version_column_width = 5
 
     # Create Header for output
-    header = f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version'}"
+    # header = f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version'}"
 
-    # Create Output
-    for pod in namespace_pods["all"]:
-        line = f"{pod['name']:<{max_pod_name_length}} {pod['status']:<{status_column_width}} {pod['age']:<{age_column_width}} {pod['version']:<{version_column_width}}"
-        # Replace spaces with dashes
-        line = line.replace(" ", "-")
-        output_lines.append(line)
+    # # Create Output
+    # for pod in namespace_pods["all"]:
+    #     line = f"{pod['name']:<{max_pod_name_length}} {pod['status']:<{status_column_width}} {pod['age']:<{age_column_width}} {pod['version']:<{version_column_width}}"
+    #     # Replace spaces with dashes
+    #     line = line.replace(" ", "-")
+    #     output_lines.append(line)
 
     # Join all lines into a single string
-    pods = "\n".join(output_lines)
+    # pods = "\n".join(output_lines)
 
-    return jsonify(header,pods)
+    # Generate the pod output
+    output_lines = create_pod_output(namespace_pods)
+
+    # Generate the formatted message with sections of max 2000 characters
+    formatted_message = format_message(output_lines, 2000)
+
+    return jsonify(formatted_message)
 
 @app.route('/get-logs', methods=['POST'])
 def get_logs():
@@ -108,25 +171,47 @@ def get_logs():
             if pod.metadata.name == pod_name:
                 return pod.metadata.namespace # Pod exists, send its namespace
         return None    # Pod does not exist
-        
-    # wrap line longet than 100 and add as newline
-    def format_log_message(log, rows_count, width=100):
-        logs_rows = []
-        
+            
+    def get_rows(log, rows_count):
+        # Split log into lines
         lines = log.splitlines()
         
-        for line in lines:
-            wrapped = textwrap.wrap(line, width=width)
-            logs_rows.extend(wrapped)
+        # Count the lines and ensure the requested rows_count does not exceed available lines
+        if rows_count > len(lines):
+            rows_count = len(lines)
         
-        # Ensure user requested rows_count does not exceed available rows
-        if rows_count > len(logs_rows):
-            rows_count = len(logs_rows)
+        # Get the last `rows_count` amount of lines
+        logs = "\n".join(lines[-rows_count:])
         
-        # Update to user requested amount of rows
-        logs = "\n".join(logs_rows[-rows_count:])
-       
-        return (logs)
+        return logs
+
+    def format_message(logs, max_length):
+        blocks = [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": f"Logs for pod {pod_name}:"
+                }
+            },
+            {
+                "type": "divider"
+            }
+        ]
+        # Split logs into chunks of a specified max length
+        for i in range(0, len(logs), max_length):
+            chunk = logs[i:i + max_length]
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "plain_text",
+                    "text": chunk
+                }
+            })
+        
+        return {
+            "blocks": blocks
+        }
 
     # Extract the text from the incoming request
     data = request.json
@@ -166,44 +251,10 @@ def get_logs():
     except client.exceptions.ApiException as error:
         return jsonify(f"Error:" ,"Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
     
-    # format the log
-    #logs = format_log_message(logs,rows_count)
-
-
-
-
-    def format_message(header, logs, max_length=2000):
-        blocks = [
-            {
-                "type": "header",
-                "text": {
-                    "type": "plain_text",
-                    "text": header
-                }
-            },
-            {
-                "type": "divider"
-            }
-        ]
-        
-        # Split logs into chunks of a specified max length
-        for i in range(0, len(logs), max_length):
-            chunk = logs[i:i + max_length]
-            blocks.append({
-                "type": "section",
-                "text": {
-                    "type": "plain_text",
-                    "text": chunk
-                }
-            })
-        
-        return {
-            "blocks": blocks
-        }
-
-    # Add header
-    header = f"Logs for pod {pod_name}:"
-
-    formatted_message = format_message(header, logs)
+    # get currect amount of rows
+    logs = get_rows(logs,rows_count)
+    
+    # devide to 2000 character sections
+    formatted_message = format_message(logs, 2000)
 
     return jsonify(formatted_message)
