@@ -171,6 +171,6 @@ def get_logs():
     print(pod_logs)
     return jsonify(pod_logs)
 
-# Run Flask
-if __name__ == "__main__":
-    app.run(port=6001, debug=True)  
+# # Run Flask
+# if __name__ == "__main__":
+#     app.run(port=6001, debug=True)  
