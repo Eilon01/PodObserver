@@ -130,8 +130,6 @@ def get_pods_command():
         if response.ok:
             data = response.json()
             header, pods_list = data[0], data[1]
-            print(pods_list)
-            print(type(pods_list))
             message = format_message(header, pods_list)
             send_message(channel_id, message['blocks'])
         else:
@@ -162,8 +160,6 @@ def get_logs_command():
         if response.ok:
             data = response.json()
             header, logs = data[0], data[1]
-            print(logs)
-            print(type(logs))
             message = format_message(header,logs)
             # client.chat_postMessage(channel=channel_id, text=logs)
             send_message(channel_id, message['blocks'])

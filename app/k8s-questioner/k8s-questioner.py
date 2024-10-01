@@ -81,8 +81,6 @@ def get_pods():
 
     # Create Header for output
     header = f"{'Pod Name':<{max_pod_name_length}} {'Status':<{status_column_width}} {'Age':<{age_column_width}} {'Version'}"
-    # output_lines.append(header)
-    # output_lines.append("=" * len(header))
 
     # Create Output
     for pod in namespace_pods["all"]:
@@ -124,7 +122,7 @@ def get_logs():
         # Ensure user requested rows_count does not exceed available rows
         if rows_count > len(logs_rows):
             rows_count = len(logs_rows)
-
+        
         # Update to user requested amount of rows
         logs = "\n".join(logs_rows[-rows_count:])
        
@@ -172,14 +170,14 @@ def get_logs():
     logs = format_log_message(logs,rows_count)
 
     # Split logs to list of rows
-    log_lines = logs.splitlines()   
+    #log_lines = logs.splitlines()   
 
     # Check if message is more than 4000 then remove rows until it is lower
-    while len(logs) > 3500:
-        log_lines = logs.splitlines()
-        log_lines.pop(0)  
-        logs = "\n".join(log_lines)
-        print("removed line")
+    # while len(logs) > 3500:
+    #     log_lines = logs.splitlines()
+    #     log_lines.pop(0)  
+    #     logs = "\n".join(log_lines)
+    #     print("removed line")
 
     print("this is logs: "+logs)
 
