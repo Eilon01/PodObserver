@@ -99,13 +99,10 @@ def help_command():
     header = "*Available Commands*"
     
     # Define the help message to display when users call the `/help` command
-    help_message = (
-        "*`/help`* - This command provides information on how to use the bot and its available commands.\n\n"
-        "*`/get-pods`* - Lists all the running pods in the Kubernetes cluster, their uptime, and the version of each service.\n\n"
-        "*`/get-logs <pod-name> <n>`* - Retrieves the last n log lines from the specified pod.\n"
-        "    Example: `/get-logs my-pod-1 50` will return the last 50 log lines from the pod named `my-pod-1`."
-    )
-
+    help_message = "*`/help`* - This command provides information on how to use the bot and its available commands.\n\n\
+        *`/get-pods`* - Lists all the running pods in the Kubernetes cluster, their uptime, and the version of each service.\n\n\
+        *`/get-logs <pod-name> <n>`* - Retrieves the last n log lines from the specified pod.\n\
+            Example: `/get-logs my-pod-1 50` will return the last 50 log lines from the pod named `my-pod-1`."
     # Retrieve channel info from Slack's request
     channel_id = request.form.get('channel_id')
 
