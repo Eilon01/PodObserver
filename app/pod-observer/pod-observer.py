@@ -165,7 +165,7 @@ def get_logs_command():
             print(logs)
             print(type(logs))
             message = format_message(header,logs)
-            #client.chat_postMessage(channel=channel_id, text=logs)
+            # client.chat_postMessage(channel=channel_id, text=logs)
             send_message(channel_id, message['blocks'])
         else:
             client.chat_postMessage(channel=channel_id, text="Error: Could not connect to Kubernetes API: K8s Questioner message was not OK.")
