@@ -167,14 +167,43 @@ def get_logs():
         return jsonify(f"Error:" ,"Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
     
     # format the log
-    logs = format_log_message(logs,rows_count)
+    #logs = format_log_message(logs,rows_count)
 
-    # make the logs be less than 3000 characters, as slack limits message character size
-    logs = logs[max(0, len(logs) - 4000):]
 
-    print("************************this is logs*************************\n"+logs)
+
+
+    def format_message(header, logs, max_length=2000):
+        blocks = [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": header
+                }
+            },
+            {
+                "type": "divider"
+            }
+        ]
+        
+        # Split logs into chunks of a specified max length
+        for i in range(0, len(logs), max_length):
+            chunk = logs[i:i + max_length]
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "plain_text",
+                    "text": chunk
+                }
+            })
+        
+        return {
+            "blocks": blocks
+        }
 
     # Add header
     header = f"Logs for pod {pod_name}:"
 
-    return jsonify(header, logs)
+    formatted_message = format_message(header, logs)
+
+    return jsonify(formatted_message)

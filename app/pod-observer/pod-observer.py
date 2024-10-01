@@ -65,9 +65,9 @@ def format_message(header, message):
     return {
   "blocks": [
                 {
-                "type": "section",
+                "type": "header",
                 "text": {
-                    "type": "mrkdwn",
+                    "type": "plain_text",
                     "text": header
                 }
                 },
@@ -77,7 +77,7 @@ def format_message(header, message):
                 {
                 "type": "section",
                 "text": {
-                    "type": "mrkdwn",
+                    "type": "plain_text",
                     "text": message
                 }
                 }
@@ -158,9 +158,8 @@ def get_logs_command():
         response = requests.post(f"http://{K8S_QUESTIONER_SERVICE}:{K8S_QUESTIONER_PORT}/get-logs", json={'user_input': text})
         # if post was ok, send message with logs, else return error
         if response.ok:
-            data = response.json()
-            header, logs = data[0], data[1]
-            message = format_message(header,logs)
+            message = response.json()
+            #message = format_message(logs)
             # client.chat_postMessage(channel=channel_id, text=logs)
             send_message(channel_id, message['blocks'])
             print(message)
