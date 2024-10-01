@@ -1,105 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pod Observer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #007bff;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h2 {
+            background-color: #f9fafb;
             color: #333;
         }
-        .stats, .search, .logs {
-            margin-bottom: 20px;
-            padding: 20px;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .stats p, .logs pre {
-            margin: 5px 0;
-        }
-        .search input[type="text"] {
-            padding: 10px;
-            width: calc(100% - 100px);
-            margin-right: 10px;
-        }
-        .search input[type="submit"] {
-            padding: 10px;
-            background-color: #007bff;
+
+        header {
+            background-color: #326ce5;
             color: white;
-            border: none;
-            cursor: pointer;
+            padding: 1.5em 0;
+            text-align: center;
         }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 2em;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            margin-bottom: 0.5em;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f0f4f8;
+            border-left: 4px solid #326ce5;
+            padding: 1em;
+            margin-bottom: 1em;
+            border-radius: 4px;
+        }
+
         .footer {
             text-align: center;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            margin-top: 2em;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        a {
+            color: #326ce5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .command-example {
+            font-family: monospace;
+            background-color: #e0e6ed;
+            padding: 0.5em;
+            border-radius: 4px;
         }
     </style>
 </head>
+
 <body>
+    <header>
+        <h1>Welcome to Pod Observer</h1>
+    </header>
+    <div class="container">
+        <h2>About Pod Observer</h2>
+        <p>Pod Observer is a Kubernetes-based tool that helps you monitor and manage your pods effectively. With a user-friendly interface and a set of essential commands, Pod Observer provides real-time information on pod health, logs, and service versions.</p>
 
-<header>
-    <h1>Pod Observer</h1>
-    <p>Real-time Monitoring for Kubernetes Pods</p>
-</header>
+        <h2>How It Works</h2>
+        <p>Pod Observer integrates with the Kubernetes API to gather information about running pods, their logs, and the services they provide. Whether you are deploying a new application or maintaining an existing one, Pod Observer helps you stay informed and troubleshoot issues quickly.</p>
 
-<div class="container">
-    <!-- Features Section -->
-    <div class="stats">
-        <h2>Current Cluster Overview</h2>
-        <p><strong>Total Pods:</strong> 125</p>
-        <p><strong>Running:</strong> 110</p>
-        <p><strong>Pending:</strong> 10</p>
-        <p><strong>Failed:</strong> 5</p>
+        <h2>Available Commands</h2>
+        <ul>
+            <li>
+                <strong>/help</strong> - This command provides information on how to use the bot and its available commands.
+            </li>
+            <li>
+                <strong>/get-pods</strong> - Lists all the running pods in the Kubernetes cluster, their uptime, and the version of each service. This command helps you monitor the status of your services in real-time.
+            </li>
+            <li>
+                <strong>/get-logs &lt;pod-name&gt; &lt;n&gt;</strong> - Retrieves the last <em>n</em> log lines from the specified pod. You can use this command to quickly check logs for troubleshooting issues or verifying system behavior.
+                <div class="command-example">
+                    Example: <code>/get-logs my-pod-1 50</code> will return the last 50 log lines from the pod named <code>my-pod-1</code>.
+                </div>
+            </li>
+        </ul>
+
+        <h2>Get Started</h2>
+        <p>To get started with Pod Observer, check out our <a href="https://github.com/Eilon01/PodObserver" target="_blank">GitHub Repository</a> for installation instructions and detailed documentation.</p>
     </div>
 
-    <!-- Search Pod Section -->
-    <div class="search">
-        <h2>Search for a Pod</h2>
-        <form action="#" method="POST">
-            <input type="text" name="pod-name" placeholder="Pod Name / Namespace" />
-            <input type="submit" value="Search" />
-        </form>
+    <div class="footer">
+        <p>&copy; 2024 Pod Observer. All rights reserved. | Built with Kubernetes in mind.</p>
     </div>
-
-    <!-- Latest Logs Section -->
-    <div class="logs">
-        <h2>Latest Logs</h2>
-        <pre>
-{"level":"info","ts":"2024-10-01T10:29:39.300435Z", 
- "caller":"mvcc/kvstore_compaction.go:69", 
- "msg":"finished scheduled compaction", 
- "compact-revision":389881}
-        </pre>
-    </div>
-</div>
-
-<!-- Footer -->
-<div class="footer">
-    Kubernetes Monitoring Tool | © 2024 Pod Observer
-</div>
-
 </body>
+
 </html>
