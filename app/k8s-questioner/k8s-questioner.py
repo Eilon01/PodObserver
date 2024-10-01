@@ -169,15 +169,8 @@ def get_logs():
     # format the log
     logs = format_log_message(logs,rows_count)
 
-    # Split logs to list of rows
-    #log_lines = logs.splitlines()   
-
-    # Check if message is more than 1000 then remove rows until it is lower
-    while len(logs) > 1000:
-        log_lines = logs.splitlines()
-        log_lines.pop(0)  
-        logs = "\n".join(log_lines)
-        print("removed line")
+    # make the logs be less than 3000 characters, as slack limits message character size
+    logs = logs[max(0, len(logs) - 4000):]
 
     print("************************this is logs*************************\n"+logs)
 
