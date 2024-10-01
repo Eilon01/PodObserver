@@ -147,7 +147,7 @@ def get_logs():
         logs = v1.read_namespaced_pod_log(name=pod_name, namespace=namespace)
     except client.exceptions.ApiException as error:
         return jsonify(f"Error: Could not connect to Kubernetes API: Unable to fetch logs\n{error}")
-
+ 
     # # Split logs to list of rows
     # logs_rows = logs.splitlines()   
 
@@ -168,5 +168,5 @@ def get_logs():
 
     # Add header
     header = f"Logs for pod {pod_name}:"
-    
+
     return jsonify(header, logs)
