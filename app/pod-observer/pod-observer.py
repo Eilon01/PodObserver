@@ -109,6 +109,8 @@ def get_pods_command():
         # if post was ok, send message with pods data, else return error
         if response.ok:
             pods_list = response.json()
+            print(pods_list)
+            print(type(pods_list))
             message = format_message(pods_list)
             send_message(channel_id, message['blocks'])
         else:
@@ -138,6 +140,8 @@ def get_logs_command():
         # if post was ok, send message with logs, else return error
         if response.ok:
             logs = response.json()
+            print(logs)
+            print(type(logs))
             message = format_message(logs)
             send_message(channel_id, message['blocks'])
         else:
